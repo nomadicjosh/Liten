@@ -2,6 +2,10 @@
 Liten is a small, simple, and restful micro framework. Even though it is small, you can still use it to build 
 intelligent and dynamic restful api's.
 
+## System Requirement
+
+Minimum of PHP version 5.4
+
 ## Features
 
 * Simple Configuration
