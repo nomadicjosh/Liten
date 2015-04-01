@@ -27,8 +27,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
 /**
  * Step 1: Initial constants defined
  * 
@@ -36,10 +34,10 @@
  * with the autoloader and the loading of other
  * needed functions and files.
  */
-defined( 'APP_ENV' )			or define( 'APP_ENV', 'DEV' );
-defined( 'DS' )					or define( 'DS', DIRECTORY_SEPARATOR );
-defined( 'BASE_PATH' )			or define( 'BASE_PATH', __DIR__ . DS );
-defined( 'APP_PATH' )			or define( 'APP_PATH', BASE_PATH . 'app' . DS );
+defined('APP_ENV')      or define('APP_ENV', 'DEV');
+defined('DS')           or define('DS', DIRECTORY_SEPARATOR);
+defined('BASE_PATH')    or define('BASE_PATH', __DIR__ . DS);
+defined('APP_PATH')     or define('APP_PATH', BASE_PATH . 'app' . DS);
 
 /**
  * Step 1: Require the Bootstrap
@@ -75,8 +73,8 @@ require( APP_PATH . 'functions.php' );
  * keep routers organized and the index.php clean.
  */
 $routers = glob($app->config('routers_dir') . '*.router.php');
-foreach ($routers as $router) { 
-    if(file_exists($router))
+foreach ($routers as $router) {
+    if (file_exists($router))
         include($router);
 }
 

@@ -1,4 +1,5 @@
 <?php namespace Liten\Exception;
+
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -27,10 +28,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
 class ViewException extends \Exception
 {
-	
+    
 }

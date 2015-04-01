@@ -1,4 +1,5 @@
 <?php namespace Liten;
+
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -27,7 +28,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 /**
  * -----------------------------------------------------------------------------
  * VoodOrm
@@ -50,40 +50,39 @@
  * Learn more: https://github.com/mardix/VoodOrm
  * 
  */
-
 use \ArrayIterator,
     \SplFixedArray,
     \IteratorAggregate,
     \Closure,
     \PDO,
     \DateTime;
-if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
 class Orm implements \IteratorAggregate
 {
-    const NAME              = "Orm";
-    const VERSION           = "3.0.0";
 
+    const NAME = "Orm";
+    const VERSION = "3.0.0";
     // ASSOCIATION CONSTANT
-    const ASSO_ONE        =  1;      // OneToOne. Eager Load data
-    const ASSO_MANY       =  2;      // OneToMany. Eager load data
+    const ASSO_ONE = 1;      // OneToOne. Eager Load data
+    const ASSO_MANY = 2;      // OneToMany. Eager load data
+    const OPERATOR_AND = " AND ";
+    const OPERATOR_OR = " OR ";
+    const ORDERBY_ASC = "ASC";
+    const ORDERBY_DESC = "DESC";
+    const JOIN_LEFT = "LEFT";
+    const JOIN_RIGHT = "RIGHT";
+    const EOL = "\n";
+    const TAB = "\t";
+    const EOL_TAB = "\n\t";
 
-    const OPERATOR_AND  = " AND ";
-    const OPERATOR_OR   = " OR ";
-    const ORDERBY_ASC   = "ASC";
-    const ORDERBY_DESC  = "DESC";
-    const JOIN_LEFT     = "LEFT";
-    const JOIN_RIGHT    = "RIGHT";
-    const EOL           = "\n";
-    const TAB           = "\t";
-    const EOL_TAB       = "\n\t";
-    
     protected $pdo = null;
     protected $table_name = "";
     protected $table_token = "";
-    protected $table_alias = "";    
+    protected $table_alias = "";
     private $pdo_stmt = null;
-
     protected $is_single = false;
     private $select_fields = [];
     private $join_sources = [];
@@ -106,15 +105,14 @@ class Orm implements \IteratorAggregate
     private $_dirty_fields = [];
     private $reference_keys = [];
     private $join_on = false;
-    private static $references = []; 
-    
+    private static $references = [];
     // Table structure
     public $table_structure = [
-        "primaryKeyname"    => "id",
-        "foreignKeyname"    => "%s_id"
+        "primaryKeyname" => "id",
+        "foreignKeyname" => "%s_id"
     ];
 
-/*******************************************************************************/
+    /*     * **************************************************************************** */
 
     /**
      * Constructor & set the table structure
@@ -124,7 +122,7 @@ class Orm implements \IteratorAggregate
      * @param string $foreignKeyName - Structure: table foreignKeyName.
      *                  It can be like %s_id where %s is the table name
      */
-    public function __construct(\PDO $pdo, $primaryKeyName = "id", $foreignKeyName = "%s") 
+    public function __construct(\PDO $pdo, $primaryKeyName = "id", $foreignKeyName = "%s")
     {
         $this->pdo = $pdo;
         $this->setStructure($primaryKeyName, $foreignKeyName);
@@ -142,19 +140,20 @@ class Orm implements \IteratorAggregate
         $instance = clone($this);
         $instance->table_name = $tableName;
         $instance->table_token = $tableName;
-        $instance->setTableAlias($alias ?: $tableName);
+        $instance->setTableAlias($alias ? : $tableName);
         $instance->reset();
-        return $instance;        
+        return $instance;
     }
 
     /**
      * Return the name of the table
      * @return string
      */
-    public function getTablename(){
+    public function getTablename()
+    {
         return $this->table_name;
     }
-    
+
     /**
      * Set the table alias
      *
@@ -171,7 +170,7 @@ class Orm implements \IteratorAggregate
     {
         return $this->table_alias;
     }
-    
+
     /**
      * 
      * @param string $primaryKeyName - the primary key, ie: id
@@ -187,7 +186,7 @@ class Orm implements \IteratorAggregate
         ];
         return $this;
     }
-    
+
     /**
      * Return the table stucture
      * @return Array
@@ -196,7 +195,7 @@ class Orm implements \IteratorAggregate
     {
         return $this->table_structure;
     }
-    
+
     /**
      * Get the primary key name
      * @return string
@@ -205,7 +204,7 @@ class Orm implements \IteratorAggregate
     {
         return $this->formatKeyname($this->table_structure["primaryKeyname"], $this->table_name);
     }
-    
+
     /**
      * Get foreign key name
      * @return string
@@ -214,7 +213,7 @@ class Orm implements \IteratorAggregate
     {
         return $this->formatKeyname($this->table_structure["foreignKeyname"], $this->table_name);
     }
-    
+
     /**
      * Return if the entry is of a single row
      * 
@@ -224,8 +223,8 @@ class Orm implements \IteratorAggregate
     {
         return $this->is_single;
     }
-    
-/*******************************************************************************/
+    /*     * **************************************************************************** */
+
     /**
      * To execute a raw query
      * 
@@ -251,10 +250,10 @@ class Orm implements \IteratorAggregate
             } else {
                 $this->is_fluent_query = true;
                 return $this;
-            }        
+            }
         }
     }
-    
+
     /**
      * To execute a raw query
      * 
@@ -279,10 +278,10 @@ class Orm implements \IteratorAggregate
             } else {
                 $this->is_fluent_query = true;
                 return $this;
-            }        
+            }
         }
     }
-    
+
     /**
      * Return the number of affected row by the last statement
      *
@@ -292,11 +291,10 @@ class Orm implements \IteratorAggregate
     {
         return ($this->pdo_executed == true) ? $this->pdo_stmt->rowCount() : 0;
     }
+    /* ------------------------------------------------------------------------------
+      Querying
+     * ----------------------------------------------------------------------------- */
 
-
-/*------------------------------------------------------------------------------
-                                Querying
-*-----------------------------------------------------------------------------*/
     /**
      * To find all rows and create their instances
      * Use the query builder to build the where clause or $this->query with select
@@ -311,37 +309,37 @@ class Orm implements \IteratorAggregate
      */
     public function find(\Closure $callback = null)
     {
-        if($this->is_fluent_query && $this->pdo_stmt == null){
+        if ($this->is_fluent_query && $this->pdo_stmt == null) {
             $this->query($this->getSelectQuery(), $this->getWhereParameters());
         }
-        
+
         //Debug SQL Query
         if ($this->debug_sql_query) {
             return $this->getSqlQuery();
         }
-        
+
         if ($this->pdo_executed == true) {
             $allRows = $this->pdo_stmt->fetchAll(\PDO::FETCH_ASSOC);
             $this->reset();
             if (is_callable($callback)) {
                 return $callback($allRows);
             } else {
-                if(count($allRows)) {
+                if (count($allRows)) {
                     // Holding all foreign keys matching the structure
                     $matchForeignKey = function($key) {
-                        return preg_match("/".str_replace("%s","[a-z]", $this->table_structure["foreignKeyname"])."/i", $key);  
+                        return preg_match("/" . str_replace("%s", "[a-z]", $this->table_structure["foreignKeyname"]) . "/i", $key);
                     };
                     foreach ($allRows as $index => &$row) {
                         if ($index == 0) {
                             $this->reference_keys = [$this->table_structure["primaryKeyname"] => []];
-                            foreach(array_keys($row) as $_rowK) {
+                            foreach (array_keys($row) as $_rowK) {
                                 if ($matchForeignKey($_rowK)) {
                                     $this->reference_keys[$_rowK] = [];
                                 }
                             }
                         }
-                        foreach($row as $rowK => &$rowV) {
-                            if(array_key_exists($rowK, $this->reference_keys)) {
+                        foreach ($row as $rowK => &$rowV) {
+                            if (array_key_exists($rowK, $this->reference_keys)) {
                                 $this->reference_keys[$rowK][] = $rowV;
                                 $this->reference_keys[$rowK] = array_unique($this->reference_keys[$rowK]);
                             }
@@ -352,18 +350,17 @@ class Orm implements \IteratorAggregate
                     foreach ($allRows as $row) {
                         $rows[] = $this->fromArray($row);
                     }
-                    $splFA = \SplFixedArray::fromArray($rows); 
+                    $splFA = \SplFixedArray::fromArray($rows);
                     unset($rows);
                     return $splFA;
                 }
-                return new \ArrayIterator;           
+                return new \ArrayIterator;
             }
         } else {
             return false;
-        }       
-             
+        }
     }
-    
+
     /**
      * Return one row
      *
@@ -372,7 +369,7 @@ class Orm implements \IteratorAggregate
      */
     public function findOne($id = null)
     {
-        if ($id){
+        if ($id) {
             $this->wherePK($id);
         }
         $this->limit(1);
@@ -385,7 +382,7 @@ class Orm implements \IteratorAggregate
             return $findAll->valid() ? $findAll->offsetGet(0) : false;
         }
     }
-    
+
     /**
      * This method allow the iteration inside of foreach()
      *
@@ -393,9 +390,9 @@ class Orm implements \IteratorAggregate
      */
     public function getIterator()
     {
-      return ($this->is_single) ? new \ArrayIterator($this->toArray()) : $this->find();
+        return ($this->is_single) ? new \ArrayIterator($this->toArray()) : $this->find();
     }
-    
+
     /**
      * Create an instance from the given row (an associative
      * array of data fetched from the database)
@@ -404,16 +401,15 @@ class Orm implements \IteratorAggregate
      */
     public function fromArray(Array $data)
     {
-        $row  = clone($this);
+        $row = clone($this);
         $row->reset();
         $row->is_single = true;
         $row->_data = $data;
         return $row;
     }
-
-/*------------------------------------------------------------------------------
-                                Fluent Query Builder
-*-----------------------------------------------------------------------------*/
+    /* ------------------------------------------------------------------------------
+      Fluent Query Builder
+     * ----------------------------------------------------------------------------- */
 
     /**
      * Create the select clause
@@ -425,10 +421,10 @@ class Orm implements \IteratorAggregate
     public function select($columns = "*", $alias = null)
     {
         $this->is_fluent_query = true;
-        if ($alias && !is_array($columns)){
+        if ($alias && !is_array($columns)) {
             $columns .= " AS {$alias} ";
         }
-        if(is_array($columns)){
+        if (is_array($columns)) {
             $this->select_fields = array_merge($this->select_fields, $columns);
         } else {
             $this->select_fields[] = $columns;
@@ -447,12 +443,12 @@ class Orm implements \IteratorAggregate
     public function where($condition, $parameters = [])
     {
         $this->is_fluent_query = true;
-        
+
         // By default the and_or_operator and wrap operator is AND, 
-        if ($this->wrap_open || ! $this->and_or_operator) {
+        if ($this->wrap_open || !$this->and_or_operator) {
             $this->_and_();
-        } 
-        
+        }
+
         // where(array("column1" => 1, "column2 > ?" => 2))
         if (is_array($condition)) {
             foreach ($condition as $key => $val) {
@@ -477,15 +473,15 @@ class Orm implements \IteratorAggregate
         }
 
         $this->where_conditions[] = [
-            "COLUMN"        => $column,
-            "STATEMENT"     => $condition,
-            "PARAMS"        => $parameters,
-            "OPERATOR"      => $this->and_or_operator
+            "COLUMN" => $column,
+            "STATEMENT" => $condition,
+            "PARAMS" => $parameters,
+            "OPERATOR" => $this->and_or_operator
         ];
 
         // Reset the where operator to AND. To use OR, you must call _or()
         $this->_and_();
-        
+
         return $this;
     }
 
@@ -494,7 +490,7 @@ class Orm implements \IteratorAggregate
      * 
      * @return Orm 
      */
-    public function _and_() 
+    public function _and_()
     {
         if ($this->wrap_open) {
             $this->where_conditions[] = self::OPERATOR_AND;
@@ -506,13 +502,12 @@ class Orm implements \IteratorAggregate
         return $this;
     }
 
-    
     /**
      * Create an OR operator in the where clause
      * 
      * @return Orm 
-     */    
-    public function _or_() 
+     */
+    public function _or_()
     {
         if ($this->wrap_open) {
             $this->where_conditions[] = self::OPERATOR_OR;
@@ -524,7 +519,6 @@ class Orm implements \IteratorAggregate
         return $this;
     }
 
-    
     /**
      * To group multiple where clauses together.  
      * 
@@ -533,16 +527,16 @@ class Orm implements \IteratorAggregate
     public function wrap()
     {
         $this->wrap_open = true;
-        
+
         $spliced = array_splice($this->where_conditions, $this->last_wrap_position, count($this->where_conditions), "(");
         $this->where_conditions = array_merge($this->where_conditions, $spliced);
 
-        array_push($this->where_conditions,")");
+        array_push($this->where_conditions, ")");
         $this->last_wrap_position = count($this->where_conditions);
 
         return $this;
     }
-    
+
     /**
      * Where Primary key
      *
@@ -647,9 +641,9 @@ class Orm implements \IteratorAggregate
      */
     public function whereIn($columnName, Array $values)
     {
-        return $this->where($columnName,$values);
+        return $this->where($columnName, $values);
     }
-    
+
     /**
      * WHERE $columName NOT IN (?,?,?,...)
      *
@@ -686,17 +680,16 @@ class Orm implements \IteratorAggregate
         return $this->where("({$columnName} IS NOT NULL)");
     }
 
-    
-    public function having($statement, $operator = self::OPERATOR_AND) 
+    public function having($statement, $operator = self::OPERATOR_AND)
     {
         $this->is_fluent_query = true;
         $this->having[] = [
-            "STATEMENT"   => $statement,
-            "OPERATOR"    => $operator
+            "STATEMENT" => $statement,
+            "OPERATOR" => $operator
         ];
-        return $this;        
+        return $this;
     }
-    
+
     /**
      * ORDER BY $columnName (ASC | DESC)
      *
@@ -734,13 +727,13 @@ class Orm implements \IteratorAggregate
     {
         if ($limit) {
             $this->is_fluent_query = true;
-            $this->limit = $limit; 
+            $this->limit = $limit;
             return $this;
         } else {
             return $this->limit;
         }
     }
-    
+
     /**
      * OFFSET $offset
      *
@@ -757,11 +750,10 @@ class Orm implements \IteratorAggregate
             return $this->offset;
         }
     }
-    
-/*------------------------------------------------------------------------------
-                                JOIN
-*-----------------------------------------------------------------------------*/
-    
+    /* ------------------------------------------------------------------------------
+      JOIN
+     * ----------------------------------------------------------------------------- */
+
     /**
      * Build a join
      *
@@ -783,7 +775,7 @@ class Orm implements \IteratorAggregate
         $this->join_sources[] = $join;
         return $this;
     }
-    
+
     /**
      * An alias to join by using a VoodOrm instance.
      * The VoodOrm instance may have select and where statement for the ON clause
@@ -795,24 +787,20 @@ class Orm implements \IteratorAggregate
     public function on(Orm $orm, $join_operator = self::JOIN_LEFT)
     {
         $this->join_on = true;
-        $constraint = str_replace("%join.", $this->getTableAlias().".", $orm->getJoinOnString());
+        $constraint = str_replace("%join.", $this->getTableAlias() . ".", $orm->getJoinOnString());
 
-        $this->select(array_map(function($row){
-                            return str_replace("%join.", $this->getTableAlias()."." , $row);
-                        }, $orm->getSelectFields())
-                    );
-        
+        $this->select(array_map(function($row) {
+                return str_replace("%join.", $this->getTableAlias() . ".", $row);
+            }, $orm->getSelectFields())
+        );
+
         return $this->_join(
-                $orm->getTablename(), 
-                $constraint, 
-                $orm->getTableAlias(),
-                $join_operator
-            );
+                $orm->getTablename(), $constraint, $orm->getTableAlias(), $join_operator
+        );
     }
-
-/*------------------------------------------------------------------------------
-                                Utils
-*-----------------------------------------------------------------------------*/
+    /* ------------------------------------------------------------------------------
+      Utils
+     * ----------------------------------------------------------------------------- */
 
     /**
      * Return the buit select query
@@ -822,17 +810,17 @@ class Orm implements \IteratorAggregate
     public function getSelectQuery()
     {
         $query = [
-            "SELECT", self::EOL_TAB, $this->getSelectString(), 
+            "SELECT", self::EOL_TAB, $this->getSelectString(),
             self::EOL,
-            "FROM", self::EOL_TAB,  $this->getTableName(), "AS", $this->getTableAlias(),
+            "FROM", self::EOL_TAB, $this->getTableName(), "AS", $this->getTableAlias(),
             self::EOL,
             $this->getJoinString(),
             self::EOL,
-            "WHERE", self::EOL_TAB, $this->getWhereString(),self::EOL
+            "WHERE", self::EOL_TAB, $this->getWhereString(), self::EOL
         ];
-        
-        if (! count($this->group_by) && $this->join_on) {
-            $this->groupBy("%this.".$this->getPrimaryKeyname());
+
+        if (!count($this->group_by) && $this->join_on) {
+            $this->groupBy("%this." . $this->getPrimaryKeyname());
         }
         if (count($this->group_by)) {
             $query[] = "GROUP BY";
@@ -876,7 +864,7 @@ class Orm implements \IteratorAggregate
     {
         return implode(", " . self::EOL_TAB, $this->getSelectFields());
     }
-    
+
     /**
      * Return the select fields as array
      * 
@@ -887,9 +875,9 @@ class Orm implements \IteratorAggregate
         if (!count($this->select_fields)) {
             $this->select("*");
         }
-        return $this->prepareColumns($this->select_fields) ;       
+        return $this->prepareColumns($this->select_fields);
     }
-    
+
     /**
      * Get a JOIN string
      * 
@@ -897,9 +885,9 @@ class Orm implements \IteratorAggregate
      */
     public function getJoinString()
     {
-        return (" ").implode(" ",$this->join_sources);
+        return (" ") . implode(" ", $this->join_sources);
     }
-    
+
     /**
      * Get the group by string
      * 
@@ -909,7 +897,7 @@ class Orm implements \IteratorAggregate
     {
         return implode(", ", array_unique($this->group_by));
     }
-    
+
     /**
      * Get the order by string
      * 
@@ -919,7 +907,7 @@ class Orm implements \IteratorAggregate
     {
         return implode(", ", array_unique($this->order_by));
     }
-    
+
     /**
      * Build the WHERE clause(s)
      *
@@ -930,7 +918,7 @@ class Orm implements \IteratorAggregate
         // If there are no WHERE clauses, return empty string
         if (!count($this->where_conditions)) {
             return "1";
-        } 
+        }
 
         $where_condition = "";
         $last_condition = "";
@@ -947,16 +935,16 @@ class Orm implements \IteratorAggregate
             }
             $last_condition = $condition;
         }
- 
+
         $columns = [];
-        foreach($this->where_conditions as $condition) {
+        foreach ($this->where_conditions as $condition) {
             $column = $condition["COLUMN"];
             $columns[$column] = (strpos($column, ".") === false) ? "%this.{$column}" : $column;
         }
         $stmt = str_replace(array_keys($columns), array_values($columns), $where_condition);
         return $this->formatColumnName($stmt);
     }
-    
+
     /**
      * Create the JOIN ... ON string when there is a join. It will be called by on()  
      *
@@ -965,22 +953,20 @@ class Orm implements \IteratorAggregate
     public function getJoinOnString()
     {
         $where = $this->getWhereString();
-        
+
         $params = $this->where_parameters;
-        return preg_replace_callback('/\?/', function($match) use(&$params) 
-                {
-                    $arg = array_shift($params);
-                    if (is_numeric($arg)) {
-                        return $arg;
-                    } else if (strpos($arg, "%") !== FALSE) {
-                        return $arg;
-                    } else {
-                        return "'{$arg}'";
-                    }
-                }, 
-                $where);
+        return preg_replace_callback('/\?/', function($match) use(&$params) {
+            $arg = array_shift($params);
+            if (is_numeric($arg)) {
+                return $arg;
+            } else if (strpos($arg, "%") !== FALSE) {
+                return $arg;
+            } else {
+                return "'{$arg}'";
+            }
+        }, $where);
     }
-    
+
     /**
      * Return the HAVING clause
      * 
@@ -991,7 +977,7 @@ class Orm implements \IteratorAggregate
         // If there are no WHERE clauses, return empty string
         if (!count($this->having)) {
             return "";
-        } 
+        }
 
         $having_condition = "";
 
@@ -1005,7 +991,7 @@ class Orm implements \IteratorAggregate
                 $having_condition .= $condition;
             }
         }
-        return $having_condition;        
+        return $having_condition;
     }
 
     /**
@@ -1019,10 +1005,10 @@ class Orm implements \IteratorAggregate
     }
 
     /**
-      * Detect if its a single row instance and reset it to PK
-      *
-      * @return Orm 
-      */
+     * Detect if its a single row instance and reset it to PK
+     *
+     * @return Orm 
+     */
     protected function setSingleWhere()
     {
         if ($this->is_single) {
@@ -1033,21 +1019,20 @@ class Orm implements \IteratorAggregate
     }
 
     /**
-      * Reset the where
-      *
-      * @return Orm 
-      */
+     * Reset the where
+     *
+     * @return Orm 
+     */
     protected function resetWhere()
     {
         $this->where_conditions = [];
         $this->where_parameters = [];
         return $this;
-    }  
-    
-    
-/*------------------------------------------------------------------------------
-                                Insert
-*-----------------------------------------------------------------------------*/    
+    }
+    /* ------------------------------------------------------------------------------
+      Insert
+     * ----------------------------------------------------------------------------- */
+
     /**
      * Insert new rows
      * $data can be 2 dimensional to add a bulk insert
@@ -1064,29 +1049,29 @@ class Orm implements \IteratorAggregate
         // check if the data is multi dimention for bulk insert
         $multi = $this->isArrayMultiDim($data);
 
-        $datafield = array_keys( $multi ? $data[0] : $data);
+        $datafield = array_keys($multi ? $data[0] : $data);
 
         if ($multi) {
             foreach ($data as $d) {
-                $question_marks[] = '('  . $this->makePlaceholders(count($d)) . ')';
+                $question_marks[] = '(' . $this->makePlaceholders(count($d)) . ')';
                 $insert_values = array_merge($insert_values, array_values($d));
             }
         } else {
-            $question_marks[] = '('  . $this->makePlaceholders(count($data)) . ')';
+            $question_marks[] = '(' . $this->makePlaceholders(count($data)) . ')';
             $insert_values = array_values($data);
         }
 
-        $sql = "INSERT INTO {$this->table_name} (" . implode(",", $datafield ) . ") ";
+        $sql = "INSERT INTO {$this->table_name} (" . implode(",", $datafield) . ") ";
         $sql .= "VALUES " . implode(',', $question_marks);
 
-        $this->query($sql,$insert_values);
+        $this->query($sql, $insert_values);
 
         // Return the SQL Query
         if ($this->debug_sql_query) {
             $this->debugSqlQuery(false);
             return $this;
         }
-                
+
         $rowCount = $this->rowCount();
 
         // On single element return the object
@@ -1098,32 +1083,32 @@ class Orm implements \IteratorAggregate
 
         return $rowCount;
     }
+    /* ------------------------------------------------------------------------------
+      Updating
+     * ----------------------------------------------------------------------------- */
 
-/*------------------------------------------------------------------------------
-                                Updating
-*-----------------------------------------------------------------------------*/    
     /**
-      * Update entries
-      * Use the query builder to create the where clause
-      *
-      * @param Array the data to update
-      * @return int - total affected rows
-      */
+     * Update entries
+     * Use the query builder to create the where clause
+     *
+     * @param Array the data to update
+     * @return int - total affected rows
+     */
     public function update(Array $data = null)
     {
         $this->setSingleWhere();
 
-        if (! is_null($data)) {
+        if (!is_null($data)) {
             $this->set($data);
         }
 
         // Make sure we remove the primary key
         unset($this->_dirty_fields[$this->getPrimaryKeyname()]);
-        
+
         $values = array_values($this->_dirty_fields);
         $field_list = [];
 
-        if (count($values) == 0){
+        if (count($values) == 0) {
             return false;
         }
 
@@ -1133,24 +1118,24 @@ class Orm implements \IteratorAggregate
 
         $query = [
             "UPDATE", self::EOL_TAB, $this->getTablename(), "AS", $this->getTableAlias(), self::EOL,
-            "SET", self::EOL_TAB, implode(", ",$field_list), self::EOL,
+            "SET", self::EOL_TAB, implode(", ", $field_list), self::EOL,
             "WHERE", self::EOL_TAB, $this->getWhereString(), self::EOL
         ];
         $this->query(implode(" ", $query), array_merge($values, $this->getWhereParameters()));
-        
+
         // Return the SQL Query
         if ($this->debug_sql_query) {
             $this->debugSqlQuery(false);
             return $this;
         } else {
             $this->_dirty_fields = [];
-            return $this->rowCount();            
+            return $this->rowCount();
         }
     }
+    /* ------------------------------------------------------------------------------
+      Delete
+     * ----------------------------------------------------------------------------- */
 
-/*------------------------------------------------------------------------------
-                                Delete
-*-----------------------------------------------------------------------------*/    
     /**
      * Delete rows
      * Use the query builder to create the where clause
@@ -1160,18 +1145,18 @@ class Orm implements \IteratorAggregate
     public function delete($deleteAll = false)
     {
         $this->setSingleWhere();
-        
+
         if (count($this->where_conditions)) {
-            
+
             $query = [
                 "DELETE FROM", self::EOL_TAB, $this->getTablename(), self::EOL,
                 "WHERE", self::EOL_TAB, $this->getWhereString(), self::EOL
             ];
-            $this->query(implode(" ", $query), $this->getWhereParameters());           
+            $this->query(implode(" ", $query), $this->getWhereParameters());
         } else {
             if ($deleteAll) {
-                $query  = "DELETE FROM {$this->table_name}";
-                $this->query($query);                
+                $query = "DELETE FROM {$this->table_name}";
+                $this->query($query);
             } else {
                 return false;
             }
@@ -1182,13 +1167,13 @@ class Orm implements \IteratorAggregate
             $this->debugSqlQuery(false);
             return $this;
         } else {
-           return $this->rowCount(); 
+            return $this->rowCount();
         }
     }
-    
-/*------------------------------------------------------------------------------
-                                Set & Save
-*-----------------------------------------------------------------------------*/
+    /* ------------------------------------------------------------------------------
+      Set & Save
+     * ----------------------------------------------------------------------------- */
+
     /**
      * To set data for update or insert
      * $key can be an array for mass set
@@ -1199,14 +1184,14 @@ class Orm implements \IteratorAggregate
      */
     public function set($key, $value = null)
     {
-        if(is_array($key)) {
+        if (is_array($key)) {
             foreach ($key as $keyKey => $keyValue) {
                 $this->set($keyKey, $keyValue);
             }
-        }  else {
-            if( $key != $this->getPrimaryKeyname()) {
+        } else {
+            if ($key != $this->getPrimaryKeyname()) {
                 $this->_data[$key] = $value;
-                $this->_dirty_fields[$key] = $value;                
+                $this->_dirty_fields[$key] = $value;
             }
         }
         return $this;
@@ -1217,20 +1202,18 @@ class Orm implements \IteratorAggregate
      * 
      * @return mixed 
      */
-    public function save() 
+    public function save()
     {
         if ($this->is_single || count($this->where_conditions)) {
             return $this->update();
         } else {
             return $this->insert($this->_dirty_fields);
         }
-    }    
+    }
+    /* ------------------------------------------------------------------------------
+      AGGREGATION
+     * ----------------------------------------------------------------------------- */
 
-
-/*------------------------------------------------------------------------------
-                                AGGREGATION
-*-----------------------------------------------------------------------------*/
-    
     /**
      * Return the aggregate count of column
      *
@@ -1239,7 +1222,7 @@ class Orm implements \IteratorAggregate
      */
     public function count($column = null)
     {
-        if (! $column) {
+        if (!$column) {
             $column = $this->getPrimaryKeyname();
         }
         return $this->aggregate("COUNT({$this->prepareColumn($column)})");
@@ -1255,7 +1238,6 @@ class Orm implements \IteratorAggregate
     {
         return $this->aggregate("MAX({$this->prepareColumn($column)})");
     }
-
 
     /**
      * Return the aggregate min count of column
@@ -1301,10 +1283,10 @@ class Orm implements \IteratorAggregate
         $result = $this->findOne();
         return ($result !== false && isset($result->count)) ? $result->count : 0;
     }
+    /* ------------------------------------------------------------------------------
+      Access single entry data
+     * ----------------------------------------------------------------------------- */
 
-/*------------------------------------------------------------------------------
-                                Access single entry data
-*-----------------------------------------------------------------------------*/
     /**
      * Return the primary key
      *
@@ -1335,7 +1317,7 @@ class Orm implements \IteratorAggregate
     {
         return $this->_data;
     }
-    
+
     public function __get($key)
     {
         return $this->get($key);
@@ -1349,13 +1331,12 @@ class Orm implements \IteratorAggregate
     public function __isset($key)
     {
         return isset($this->_data[$key]);
-    }    
+    }
+    /*     * **************************************************************************** */
+    /* ------------------------------------------------------------------------------
+      Association
+     * ----------------------------------------------------------------------------- */
 
-/*******************************************************************************/
-/*------------------------------------------------------------------------------
-                                Association
-*-----------------------------------------------------------------------------*/
-    
     /**
      * Association / Load
      * 
@@ -1395,15 +1376,15 @@ class Orm implements \IteratorAggregate
     public function __call($tablename, $args)
     {
         $_def = [
-            "association"   => self::ASSO_MANY, // The type of association: MANY | ONE
-            "model"         => null,  // An instance VoodOrm class as the class to interact with
-            "foreignKey"    => "", // the foreign key for the association
-            "localKey"      => "", // localKey for the association
-            "columns"       => "*", // the columns to select
-            "where"         => [], // Where condition
-            "sort"          => "", // Sort of the result
-            "callback"      => null, // A callback on the results
-            "backref"       => false // When true, it will query in the reverse direction
+            "association" => self::ASSO_MANY, // The type of association: MANY | ONE
+            "model" => null, // An instance VoodOrm class as the class to interact with
+            "foreignKey" => "", // the foreign key for the association
+            "localKey" => "", // localKey for the association
+            "columns" => "*", // the columns to select
+            "where" => [], // Where condition
+            "sort" => "", // Sort of the result
+            "callback" => null, // A callback on the results
+            "backref" => false // When true, it will query in the reverse direction
         ];
         $prop = array_merge($_def, $args);
 
@@ -1414,14 +1395,14 @@ class Orm implements \IteratorAggregate
                  */
                 default:
                 case self::ASSO_MANY:
-                    $localKeyN = ($prop["localKey"]) ?: $this->getPrimaryKeyname();
-                    $foreignKeyN = ($prop["foreignKey"]) ?: $this->getForeignKeyname();
-                    
+                    $localKeyN = ($prop["localKey"]) ? : $this->getPrimaryKeyname();
+                    $foreignKeyN = ($prop["foreignKey"]) ? : $this->getForeignKeyname();
+
                     $token = $this->tokenize($tablename, $foreignKeyN . ":" . $prop["association"]);
 
                     if (!isset(self::$references[$token])) {
-                        
-                        $model = $prop["model"] ?: $this->table($tablename);
+
+                        $model = $prop["model"] ? : $this->table($tablename);
 
                         // Backref (back reference). Reverse the query
                         if ($prop["backref"]) {
@@ -1430,10 +1411,10 @@ class Orm implements \IteratorAggregate
                             }
                         } else {
                             if (isset($this->reference_keys[$localKeyN])) {
-                                $model->where($foreignKeyN, $this->reference_keys[$localKeyN]); 
+                                $model->where($foreignKeyN, $this->reference_keys[$localKeyN]);
                             }
                         }
-                        if($prop["where"]) {
+                        if ($prop["where"]) {
                             $model->where($prop["where"]);
                         }
                         if ($prop["sort"]) {
@@ -1447,7 +1428,7 @@ class Orm implements \IteratorAggregate
                             $tmp = [];
                             foreach ($rows as $row) {
                                 $_i = $row[$foreignKeyN];
-                                if (! isset($tmp[$_i])) {
+                                if (!isset($tmp[$_i])) {
                                     $tmp[$_i] = [];
                                 }
                                 $tmp[$_i][] = is_callable($prop["callback"]) ? $prop["callback"]($row) : $model->fromArray($row);
@@ -1460,37 +1441,33 @@ class Orm implements \IteratorAggregate
                             return $results;
                         });
                     }
-                    return isset(self::$references[$token][$this->{$localKeyN}])
-                                ? self::$references[$token][$this->{$localKeyN}] 
-                                : new \ArrayIterator;
+                    return isset(self::$references[$token][$this->{$localKeyN}]) ? self::$references[$token][$this->{$localKeyN}] : new \ArrayIterator;
                     break;
 
                 case self::ASSO_ONE:
-                    $localKeyN = $prop["localKey"] ?: $this->formatKeyname($this->getStructure()["foreignKeyname"], $tablename);
-                    
+                    $localKeyN = $prop["localKey"] ? : $this->formatKeyname($this->getStructure()["foreignKeyname"], $tablename);
+
                     if (isset($this->{$localKeyN}) && $this->{$localKeyN}) {
-                        $model = $prop["model"] ?: $this->table($tablename);
-                        $foreignKeyN = $prop["foreignKey"] ?: $model->getPrimaryKeyname();
-                        
+                        $model = $prop["model"] ? : $this->table($tablename);
+                        $foreignKeyN = $prop["foreignKey"] ? : $model->getPrimaryKeyname();
+
                         $token = $this->tokenize($tablename, $localKeyN . ":" . $prop["association"]);
 
-                        if (! isset(self::$references[$token])) {
+                        if (!isset(self::$references[$token])) {
                             if (isset($this->reference_keys[$localKeyN])) {
-                               $model->where($foreignKeyN, $this->reference_keys[$localKeyN]); 
-                            }    
-                            
+                                $model->where($foreignKeyN, $this->reference_keys[$localKeyN]);
+                            }
+
                             if ($prop["columns"]) {
                                 $model->select($prop["columns"]);
                             }
-                            
+
                             self::$references[$token] = $model->find(function($rows) use ($model, $callback, $foreignKeyN) {
-                               $results = [];
-                               foreach ($rows as $row) {
-                                    $results[$row[$foreignKeyN]] = is_callable($callback)
-                                                                    ? $callback($row)
-                                                                    : $model->fromArray($row);
-                               }
-                               return $results;
+                                $results = [];
+                                foreach ($rows as $row) {
+                                    $results[$row[$foreignKeyN]] = is_callable($callback) ? $callback($row) : $model->fromArray($row);
+                                }
+                                return $results;
                             });
                         }
                         return self::$references[$token][$this->{$localKeyN}];
@@ -1500,12 +1477,10 @@ class Orm implements \IteratorAggregate
                     break;
             }
         } else {
-            return $prop["model"] ?: $this->table($tablename);
+            return $prop["model"] ? : $this->table($tablename);
         }
-
     }
-
-/*******************************************************************************/
+    /*     * **************************************************************************** */
 // Utilities methods
 
     /**
@@ -1544,16 +1519,14 @@ class Orm implements \IteratorAggregate
      *          now, yesterday, 3 days ago, +1 week
      *          http://php.net/manual/en/function.strtotime.php
      * @return string YYYY-MM-DD HH:II:SS
-     */    
+     */
     public static function NOW($datetime = "now")
     {
-        return (new \DateTime($datetime ?: "now"))->format("Y-m-d H:i:s");
+        return (new \DateTime($datetime ? : "now"))->format("Y-m-d H:i:s");
     }
-
-
-/*******************************************************************************/
+    /*     * **************************************************************************** */
 // Query Debugger
-    
+
     /**
      * To debug the query. It will not execute it but instead using debugSqlQuery()
      * and getSqlParameters to get the data
@@ -1566,7 +1539,7 @@ class Orm implements \IteratorAggregate
         $this->debug_sql_query = $bool;
         return $this;
     }
-    
+
     /**
      * Get the SQL Query with 
      * 
@@ -1576,7 +1549,7 @@ class Orm implements \IteratorAggregate
     {
         return $this->sql_query;
     }
-    
+
     /**
      * Return the parameters of the SQL
      * 
@@ -1586,16 +1559,18 @@ class Orm implements \IteratorAggregate
     {
         return $this->sql_parameters;
     }
-    
-/*******************************************************************************/
+    /*     * **************************************************************************** */
+
     public function __clone()
-    {}
-    
+    {
+        
+    }
+
     public function __toString()
     {
         return $this->is_single ? $this->getPK() : $this->table_name;
-    } 
-    
+    }
+
     /**
      * Return a string containing the given number of question marks,
      * separated by commas. Eg "?, ?, ?"
@@ -1603,7 +1578,7 @@ class Orm implements \IteratorAggregate
      * @param int - total of placeholder to inser
      * @return string
      */
-    protected function makePlaceholders($number_of_placeholders=1)
+    protected function makePlaceholders($number_of_placeholders = 1)
     {
         return implode(", ", array_fill(0, $number_of_placeholders, "?"));
     }
@@ -1617,7 +1592,7 @@ class Orm implements \IteratorAggregate
      */
     protected function formatKeyname($pattern, $tablename)
     {
-       return sprintf($pattern, $tablename);
+        return sprintf($pattern, $tablename);
     }
 
     /**
@@ -1629,9 +1604,9 @@ class Orm implements \IteratorAggregate
      */
     private function tokenize($key, $suffix = "")
     {
-        return  $this->table_token.":$key:$suffix";
-    }   
-    
+        return $this->table_token . ":$key:$suffix";
+    }
+
     /**
      * Check if aray is multi dim
      * @param array $data
@@ -1639,9 +1614,9 @@ class Orm implements \IteratorAggregate
      */
     private function isArrayMultiDim(Array $data)
     {
-        return (count($data) != count($data,COUNT_RECURSIVE));
+        return (count($data) != count($data, COUNT_RECURSIVE));
     }
-    
+
     /**
      * Prepare columns to include the table alias name
      * @param array $columns
@@ -1659,17 +1634,18 @@ class Orm implements \IteratorAggregate
         }
         return $newColumns;
     }
-    
+
     private function prepareColumn($column)
     {
         $column = trim($column);
         if (strpos($column, ".") === false && strpos(strtoupper($column), "NULL") === false) {
-            if (! preg_match("/^[0-9]/", $column)) {
+            if (!preg_match("/^[0-9]/", $column)) {
                 $column = "%this.{$column}";
             }
         }
         return $this->formatColumnName($column);
     }
+
     /**
      * Format a column name to add the the table alias
      * 
@@ -1678,6 +1654,6 @@ class Orm implements \IteratorAggregate
      */
     public function formatColumnName($column)
     {
-        return str_replace("%this.", $this->getTableAlias().".", $column);
+        return str_replace("%this.", $this->getTableAlias() . ".", $column);
     }
 }

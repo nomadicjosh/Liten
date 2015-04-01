@@ -1,4 +1,6 @@
-<?php if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+<?php
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -27,26 +29,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
-
 /**
  * Error log setting
  */
-if(APP_ENV == 'DEV') {
-	/**
-	 * Print errors to the screen.
-	 */
-	error_reporting( E_ALL & ~E_NOTICE );
-	ini_set('display_errors','On');
+if (APP_ENV == 'DEV') {
+    /**
+     * Print errors to the screen.
+     */
+    error_reporting(E_ALL & ~E_NOTICE);
+    ini_set('display_errors', 'On');
 } else {
-	/**
-	 * Log errors to a file.
-	 */
-	error_reporting( E_ALL & ~E_NOTICE );
-	ini_set('display_errors','Off');
-	ini_set('log_errors', 'On');
-	ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+    /**
+     * Log errors to a file.
+     */
+    error_reporting(E_ALL & ~E_NOTICE);
+    ini_set('display_errors', 'Off');
+    ini_set('log_errors', 'On');
+    ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
 }
 
 require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
