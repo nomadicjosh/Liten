@@ -1,4 +1,5 @@
 <?php namespace Liten\Http;
+
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -27,155 +28,166 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
 class Request
 {
-    /**
-	 * Enable of disable SSL
-	 * @var bool
-	 */
-  	public $_ssl = false;
-	
-	/**
-	 * Global server variables
-	 * @var bool
-	 */
-  	public $server = [];
 
     /**
-	 * Constructor Function
-	 */
+     * Enable of disable SSL
+     * @var bool
+     */
+    public $_ssl = false;
+
+    /**
+     * Global server variables
+     * @var bool
+     */
+    public $server = [];
+
+    /**
+     * Constructor Function
+     */
     public function __construct()
     {
-    	$this->server = $_SERVER;
+        $this->server = $_SERVER;
     }
-	
-	/**
+
+    /**
      * Enable SSL.
      */
-	public function enableSSL() {
-    	$this->_ssl = true;
-  	}
-	
-	/**
+    public function enableSSL()
+    {
+        $this->_ssl = true;
+    }
+
+    /**
      * Disable SSL.
      */
-  	public function disableSSL() {
-    	$this->_ssl = false;
-  	}
-	
-	public function getMethod() {
-		return $this->server['REQUEST_METHOD'];
-	}
-	
-	/**
-	 * Determine if the incoming method
-	 * request is POST.
-	 */
-	public function isPost() {
-		return $this->getMethod() === 'POST';
-	}
-	
-	/**
-	 * Determine if the incoming method
-	 * request is GET.
-	 */
-	public function isGet() {
-		return $this->getMethod() === 'GET';
-	}
-	
-	/**
-	 * Determine if the incoming method
-	 * request is PUT.
-	 */
-	public function isPut() {
-		return $this->getMethod() === 'PUT';
-	}
-	
-	/**
-	 * Determine if the incoming method
-	 * request is DELETE.
-	 */
-	public function isDelete() {
-		return $this->getMethod() === 'DELETE';
-	}
-	
-	/**
-	 * Determine if the incoming method
-	 * request is PATCH.
-	 */
-	public function isPatch() {
-		return $this->getMethod() === 'PATCH';
-	}
+    public function disableSSL()
+    {
+        $this->_ssl = false;
+    }
 
-	/**
-	 * Determine if the incoming method
-	 * request is HEAD.
-	 */
-	public function isHead() {
-		return $this->getMethod() === 'HEAD';
-	}
-	
-	/**
-	 * Determine if the incoming method
-	 * request is OPTIONS.
-	 */
-	public function isOptions() {
-		return $this->getMethod() === 'OPTIONS';
-	}
-	
-	/**
-	 * Get Host
-	 */
-	public function getHost() {
-		return $this->server['HTTP_HOST'];
-	}
-	
-	/**
-	 * Return protocol based on the
-	 * SSL setting.
-	 */
-	public function protocol() {
-		if($this->_ssl === true) {
-			return 'https://';
-		}
-		return 'http://';
-	}
-	
-	/**
-	 * Returns url based on protocol, route and prefix.
-	 */
-	public function url_for($route,$prefix = null) {
-		if($prefix === null) {
-			return $this->protocol() . $this->getHost() . $route;
-		}
-		return $this->protocol() . ($prefix !== null ? $prefix.'.' : '') . $this->getHost() . $route;
-	}
-	
-	/**
-	 * Returns GET variable if set
-	 * @param string $caller
-	 */
-	public function _get($caller)
-	{
-        if(isset($_GET[$caller]))
-        {
+    public function getMethod()
+    {
+        return $this->server['REQUEST_METHOD'];
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is POST.
+     */
+    public function isPost()
+    {
+        return $this->getMethod() === 'POST';
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is GET.
+     */
+    public function isGet()
+    {
+        return $this->getMethod() === 'GET';
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is PUT.
+     */
+    public function isPut()
+    {
+        return $this->getMethod() === 'PUT';
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is DELETE.
+     */
+    public function isDelete()
+    {
+        return $this->getMethod() === 'DELETE';
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is PATCH.
+     */
+    public function isPatch()
+    {
+        return $this->getMethod() === 'PATCH';
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is HEAD.
+     */
+    public function isHead()
+    {
+        return $this->getMethod() === 'HEAD';
+    }
+
+    /**
+     * Determine if the incoming method
+     * request is OPTIONS.
+     */
+    public function isOptions()
+    {
+        return $this->getMethod() === 'OPTIONS';
+    }
+
+    /**
+     * Get Host
+     */
+    public function getHost()
+    {
+        return $this->server['HTTP_HOST'];
+    }
+
+    /**
+     * Return protocol based on the
+     * SSL setting.
+     */
+    public function protocol()
+    {
+        if ($this->_ssl === true) {
+            return 'https://';
+        }
+        return 'http://';
+    }
+
+    /**
+     * Returns url based on protocol, route and prefix.
+     */
+    public function url_for($route, $prefix = null)
+    {
+        if ($prefix === null) {
+            return $this->protocol() . $this->getHost() . $route;
+        }
+        return $this->protocol() . ($prefix !== null ? $prefix . '.' : '') . $this->getHost() . $route;
+    }
+
+    /**
+     * Returns GET variable if set
+     * @param string $caller
+     */
+    public function _get($caller)
+    {
+        if (isset($_GET[$caller])) {
             return $_GET[$caller];
         }
     }
-	
-	/**
-	 * Returns POST variable if set
-	 * @param string $caller
-	 */
-	public function _post($caller)
-	{
-        if(isset($_POST[$caller]))
-        {
+
+    /**
+     * Returns POST variable if set
+     * @param string $caller
+     */
+    public function _post($caller)
+    {
+        if (isset($_POST[$caller])) {
             return $_POST[$caller];
         }
     }
-	
 }

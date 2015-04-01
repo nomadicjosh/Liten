@@ -1,5 +1,5 @@
-<?php
-namespace Liten;
+<?php namespace Liten;
+
 /**
  * Liten - PHP 5 micro framework
  *
@@ -28,96 +28,85 @@ namespace Liten;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 if (!defined('BASE_PATH'))
-	exit('No direct script access allowed');
+    exit('No direct script access allowed');
 
 class Cookies
 {
 
-	/**
-	 * Liten application object
-	 * @var object|callable
-	 */
-	protected $_app;
+    /**
+     * Liten application object
+     * @var object|callable
+     */
+    protected $_app;
 
-	/**
-	 * Regular expression for matching and validating a MAC address
-	 * @var string
-	 */
-	protected $_valid_mac = "([0-9A-F]{2}[:-]){5}([0-9A-F]{2})";
+    /**
+     * Regular expression for matching and validating a MAC address
+     * @var string
+     */
+    protected $_valid_mac = "([0-9A-F]{2}[:-]){5}([0-9A-F]{2})";
 
-	/**
-	 * An array of valid MAC address characters
-	 * @var array
-	 * @formatter:off
+    /**
+     * An array of valid MAC address characters
+     * @var array
+     * @formatter:off
      */
     protected $_mac_address_vals = [
         "0", "1", "2", "3", "4", "5", "6", "7",
         "8", "9", "A", "B", "C", "D", "E", "F"
-     ];
-    
-    public function __construct($private_key = null) {
-    	$this->_app = \Liten\Liten::getInstance();
+    ];
+
+    public function __construct($private_key = null)
+    {
+        $this->_app = \Liten\Liten::getInstance();
     }
-	
-	/**
+
+    /**
      * Retrieves a set cookie.
      *
      * @since 1.0.0
      * @return string Returns cookie if valid
      * 
-     */ 
-    public function get($key) {
-        if($this->verifyCookie($key)) {
+     */
+    public function get($key)
+    {
+        if ($this->verifyCookie($key)) {
             return $_COOKIE[$key];
         }
     }
-    
+
     /**
      * Set the cookie
      *
      * @since 1.0.0
      * @return mixed
      * 
-     */ 
+     */
     public function set($key, $value)
     {
-    	$value = $this->buildCookie($value);
-    	// @formatter:off
-        return setcookie( 
-        				$key, 
-        				$value, 
-        				time() + $this->_app->config('cookies.lifetime'), 
-        				$this->_app->config('cookies.path'), 
-        				$this->_app->config('cookies.domain'), 
-        				$this->_app->config('cookies.secure'), 
-						$this->_app->config('cookies.httponly')
-		);
+        $value = $this->buildCookie($value);
+        // @formatter:off
+        return setcookie(
+            $key, $value, time() + $this->_app->config('cookies.lifetime'), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
+        );
     }
-	
-	/**
+
+    /**
      * Unset the cookie
      *
      * @since 1.0.0
      * @return mixed
      * 
-     */ 
+     */
     public function remove($key)
     {
-    	// @formatter:off
-        return setcookie( 
-        				$key,
-        				'', 
-        				time() - 86400,
-        				$this->_app->config('cookies.path'),
-        				$this->_app->config('cookies.domain'), 
-        				$this->_app->config('cookies.secure'), 
-						$this->_app->config('cookies.httponly')
-		);
+        // @formatter:off
+        return setcookie(
+            $key, '', time() - 86400, $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
+        );
     }
-	
-	/**
+
+    /**
      * @return string generated MAC address
      */
     public function generateMacAddress()
@@ -133,8 +122,8 @@ class Cookies
         }
         return $mac;
     }
-	
-	/**
+
+    /**
      * Make sure the provided MAC address is in the correct format
      * @param string $mac
      * @return bool true if valid; otherwise false
@@ -143,34 +132,34 @@ class Cookies
     {
         return (bool) preg_match("/^" . $this->_valid_mac . "$/i", $mac);
     }
-	
-	/**
+
+    /**
      * Generates a hardened cookie string with digest.
      *
      * @param string $data Cookie value: e.g. username or userID
      */
     public function buildCookie($data)
     {
-    	$expires = time() + $this->_app->config('cookies.lifetime');
-		
+        $expires = time() + $this->_app->config('cookies.lifetime');
+
         $string = sprintf("exp=%s&data=%s", urlencode($expires), urlencode($data));
         $mac = hash_hmac($this->_app->config('cookies.crypt'), $string, $this->_app->config('cookies.secret.key'));
         return $string . '&digest=' . urlencode($mac);
     }
-	
-	/**
+
+    /**
      * Extracts the data from the cookie string. 
      * This does not verify the cookie! This is just so you can get the user's hash.
      *
      * @return string The data
-     **/
+     * */
     public function getCookieData($cookie)
     {
         parse_str($_COOKIE[$cookie], $vars);
         return $vars['data'];
     }
-	
-	/**
+
+    /**
      * Verifies the expiry and MAC for the cookie
      *
      * @param string $cookie String from the client
@@ -178,26 +167,23 @@ class Cookies
      */
     public function verifyCookie($cookie)
     {
-    	$cookie = $_COOKIE[$cookie];
-		
+        $cookie = $_COOKIE[$cookie];
+
         parse_str($cookie, $vars);
-        
-        if(empty($vars['exp']) || $vars['exp'] < time())
-        {
+
+        if (empty($vars['exp']) || $vars['exp'] < time()) {
             // The cookie has expired
             return false;
         }
-		
-		$mac = sprintf("exp=%s&data=%s", urlencode($vars['exp']), urlencode($vars['data']));
-		$key = hash_hmac( $this->_app->config('cookies.crypt'), $mac, $this->_app->config('cookies.secret.key') );
-		
-        if($vars['digest'] != $key)
-        {
-        	// The cookie has been compromised
+
+        $mac = sprintf("exp=%s&data=%s", urlencode($vars['exp']), urlencode($vars['data']));
+        $key = hash_hmac($this->_app->config('cookies.crypt'), $mac, $this->_app->config('cookies.secret.key'));
+
+        if ($vars['digest'] != $key) {
+            // The cookie has been compromised
             return false;
         }
-        
+
         return true;
     }
-
 }
