@@ -110,37 +110,36 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return $print;
     }
 	
-	/**
+    /**
      * @since 1.0.0
 	 * @return bool
      */
-	function remoteFileExists($url) {
-        $curl = curl_init($url);
-        //don't fetch the actual page, you only want to check the connection is ok
-        curl_setopt($curl, CURLOPT_NOBODY, true);
-        //do request
-        $result = curl_exec($curl);
-        $ret = false;
-        //if request did not fail
-        if ($result !== false) {
-            //if request was ok, check response code
-            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);  
-    
-            if ($statusCode == 200) {
-                $ret = true;   
-            }
-        }
-        curl_close($curl);
-    return $ret;
-    
-    }
+    function remoteFileExists($url) {
+    	$curl = curl_init($url);
+    	//don't fetch the actual page, you only want to check the connection is ok
+    	curl_setopt($curl, CURLOPT_NOBODY, true);
+    	//do request
+    	$result = curl_exec($curl);
+    	$ret = false;
+    	//if request did not fail
+    		if ($result !== false) {
+        	//if request was ok, check response code
+        		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);  
+
+        		if ($statusCode == 200) {
+            		$ret = true;   
+        		}
+    		}
+    	curl_close($curl);
+		return $ret;
+	}
 	
-	/**
+    /**
      * Return the file extension of the given filename.
-     *
-     * @param  string $filename
-     * @return string
-     * @since   1.0.0
+	 * 
+	 * @param  string $filename
+	 * @return string
+	 * @since   1.0.0
      */
     function get_file_ext($filename)
     {
@@ -175,14 +174,14 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return $ret;
     }
 	
-	/**
+    /**
      * Special function for files including
-     *
-     * @param string $file
-     * @param bool $once
-     * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
-     *
-     * @return bool
+	 * 
+	 * @param string $file
+	 * @param bool $once
+	 * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
+	 * 
+	 * @return bool
 	 * @since 1.0.0
      */
     function _require ($file, $once = false, $show_errors = true)
@@ -202,14 +201,14 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return false;
     }
 	
-	/**
+    /**
      * Special function for files including
-     *
-     * @param string $file
-     * @param bool $once
-     * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
-     *
-     * @return bool
+	 * 
+	 * @param string $file
+	 * @param bool $once
+	 * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
+	 * 
+	 * @return bool
 	 * @since 1.0.0
      */
     function _include ($file, $once = false, $show_errors = true)
@@ -229,13 +228,13 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return false;
     }
 	
-	/**
+    /**
      * Special function for files including
-     *
-     * @param string $file
-     * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
-     *
-     * @return bool
+	 * 
+	 * @param string $file
+	 * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
+	 * 
+	 * @return bool
 	 * @since 1.0.0
      */
     function _require_once ($file, $show_errors = true)
@@ -243,13 +242,13 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return _require($file, true, $show_errors);
     }
 	
-	/**
+    /**
      * Special function for files including
-     *
-     * @param string $file
-     * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
-     *
-     * @return bool
+	 * 
+	 * @param string $file
+	 * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
+	 * 
+	 * @return bool
 	 * @since 1.0.0
      */
     function _include_once ($file, $show_errors = true)
@@ -257,11 +256,11 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return _include($file, true, $show_errors);
     }
 	
-	/**
+    /**
      * Validate email.
-     *
-     * @param string $email
-     * @return string (ok, empty, bad email).
+	 * 
+	 * @param string $email
+	 * @return string (ok, empty, bad email).
 	 * @since 1.0.0
      */
     function validate_email($email) {
@@ -272,7 +271,7 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
             else return true;
     }
 	
-	/**
+    /**
      * Formats date to be stored in MySQL database.
 	 * 
 	 * @return string
@@ -285,22 +284,22 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         return $date;
     }
 	
-	/**
+    /**
      * Removes all whitespace.
-     * 
-     * @param string $str
-     * @return mixed
+	 * 
+	 * @param string $str
+	 * @return mixed
 	 * @since 1.0.0
      */
     function _trim($str) {
         return preg_replace('/\s/', '', $str);
     }
 	
-	/**
+    /**
      * Function used to create a slug associated to an "ugly" string.
 	 * 
-     * @param string $string the string to transform.
-     * @return string the resulting slug.
+	 * @param string $string the string to transform.
+	 * @return string the resulting slug.
 	 * @since 1.0.0
      */
     function slugify($string) {
@@ -319,11 +318,11 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
         // -- Returns the slug
         return strtolower(strtr($string, $table));
     }
-
+    
     /**
      * @param string $file Filepath
-     * @param int $digits Digits to display
-     * @return string|bool Size (KB, MB, GB, TB) or boolean
+	 * @param int $digits Digits to display
+	 * @return string|bool Size (KB, MB, GB, TB) or boolean
 	 * @since 1.0.0
      */
     function getFilesize($file,$digits = 2) {
@@ -340,13 +339,13 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
     }
 	
 	/**
-     * Redirects to another page.
-     *
-     * @param string $location The path to redirect to
-     * @param int $status Status code to use
-     * @return bool False if $location is not set
+	 * Redirects to another page.
+	 * 
+	 * @param string $location The path to redirect to
+	 * @param int $status Status code to use
+	 * @return bool False if $location is not set
 	 * @since 1.0.0
-     */
+	 */
 	function redirect($location, $status = 302)
 	{
         if ( !$location )
