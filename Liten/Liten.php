@@ -1,4 +1,5 @@
-<?php namespace Liten;
+<?php
+namespace Liten;
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -30,7 +31,8 @@
 
 if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
 
-class Liten {
+class Liten
+{
 	
 	/**
      * @var string
@@ -175,6 +177,7 @@ class Liten {
      */
     public static function defaultConfig()
     {
+    	// @formatter:off
         return [
 	        // Cookies
 	        'cookies.lifetime' 		=> '1440',
@@ -182,6 +185,9 @@ class Liten {
 	        'cookies.domain' 		=> null,
 	        'cookies.secure' 		=> false,
 	        'cookies.httponly' 		=> false,
+	        // Secure Cookies
+	        'cookies.crypt'			=> 'sha256',
+	        'cookies.secret.key'	=> '8sh8w82j9s71092iw8usi',
 	        // Directories
 	        'view_dir'				=> APP_PATH . 'views' . DS,
 	        'layouts_dir'			=> APP_PATH . 'views' . DS . '_layouts' . DS,
@@ -213,8 +219,10 @@ class Liten {
     public function config($name, $value = null)
     {
         $c = $this->inst;
-        if (is_array($name)) {
-            if (true === $value) {
+        if (is_array($name))
+        {
+            if (true === $value)
+            {
                 $c['config'] = array_merge_recursive($c['config'], $name);
             } else {
                 $c['config'] = array_merge($c['config'], $name);
@@ -241,7 +249,8 @@ class Liten {
 		$pattern = $this->_baseroute . '/' . trim($pattern, '/');
 		$pattern = $this->_baseroute ? rtrim($pattern, '/') : $pattern;
 
-		foreach (explode('|', $methods) as $method) {
+		foreach (explode('|', $methods) as $method)
+		{
 			$this->_befores[$method][] = [
 				'pattern' => $pattern,
 				'fn' => $fn
@@ -262,7 +271,8 @@ class Liten {
 		$pattern = $this->_baseroute . '/' . trim($pattern, '/');
 		$pattern = $this->_baseroute ? rtrim($pattern, '/') : $pattern;
 
-		foreach (explode('|', $methods) as $method) {
+		foreach (explode('|', $methods) as $method)
+		{
 			$this->_routes[$method][] = [
 				'pattern' => $pattern,
 				'fn' => $fn
@@ -415,7 +425,8 @@ class Liten {
 		else if ($this->req->server['REQUEST_METHOD'] == 'POST')
 		{
 			$headers = $this->getRequestHeaders();
-			if (isset($headers['X-HTTP-Method-Override']) && in_array($headers['X-HTTP-Method-Override'], ['PUT', 'DELETE', 'PATCH'])) {
+			if (isset($headers['X-HTTP-Method-Override']) && in_array($headers['X-HTTP-Method-Override'], ['PUT', 'DELETE', 'PATCH']))
+			{
 				$method = $headers['X-HTTP-Method-Override'];
 			}
 		}
