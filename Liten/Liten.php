@@ -37,7 +37,7 @@ class Liten
 	/**
      * @var string
      */
-    public $version = '1.0.0';
+    public $version = '1.0.1b';
 	
 	/**
      * @var \Liten\Helper\Set
