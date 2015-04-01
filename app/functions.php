@@ -346,9 +346,9 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
 	 * @return bool False if $location is not set
 	 * @since 1.0.0
 	 */
-	function redirect($location, $status = 302)
-	{
-        if ( !$location )
-            return false;
-        header("Location: $location", true, $status);
-    }
+    function redirect($location, $status = 302)
+    {
+    	if ( !$location )
+    	    return false;
+    	header("Location: $location", true, $status);
+	}
