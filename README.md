@@ -25,5 +25,5 @@ own [repository] (https://github.com/7mediaws/Liten-Libraries).
 
 ## Documentation & Community
 
-Would love to have your input and help into making Liten a small but yet powerfule micro framework. Head on over to 
+Would love to have your input and help into making Liten a small but yet powerful micro framework. Head on over to 
 the [online documentation] (http://www.litenframework.com/) site to ask questions and or make suggestions.
