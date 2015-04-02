@@ -176,22 +176,21 @@ class Liten
      */
     public static function defaultConfig()
     {
-        // @formatter:off
         return [
             // Cookies
-            'cookies.lifetime' => '1440',
-            'cookies.path' => '/',
-            'cookies.domain' => null,
-            'cookies.secure' => false,
-            'cookies.httponly' => false,
+            'cookies.lifetime'      => '1440',
+            'cookies.path'          => '/',
+            'cookies.domain'        => null,
+            'cookies.secure'        => false,
+            'cookies.httponly'      => false,
             // Secure Cookies
-            'cookies.crypt' => 'sha256',
-            'cookies.secret.key' => '8sh8w82j9s71092iw8usi',
+            'cookies.crypt'         => 'sha256',
+            'cookies.secret.key'    => '8sh8w82j9s71092iw8usi',
             // Directories
-            'view_dir' => APP_PATH . 'views' . DS,
-            'layouts_dir' => APP_PATH . 'views' . DS . '_layouts' . DS,
-            'partials_dir' => APP_PATH . 'views' . DS . '_partials' . DS,
-            'routers_dir' => APP_PATH . 'routers' . DS
+            'view_dir'              => APP_PATH . 'views' . DS,
+            'layouts_dir'           => APP_PATH . 'views' . DS . '_layouts' . DS,
+            'partials_dir'          => APP_PATH . 'views' . DS . '_partials' . DS,
+            'routers_dir'           => APP_PATH . 'routers' . DS
         ];
     }
 
