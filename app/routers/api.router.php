@@ -9,7 +9,7 @@ $app->group('/api', function() use ($app, $orm) {
      * Will result in /api/.
      */
     $app->get('/', function () use($app) {
-        echo $app->res->_type('json', $app->res->HTTP[204]);
+        echo $app->res->_format('json', $app->res->HTTP[204]);
     });
 
     /**
@@ -32,21 +32,21 @@ $app->group('/api', function() use ($app, $orm) {
          * is false and a 404 should be sent.
          */
         if ($q === false) {
-            echo $app->res->_type('json', $app->res->HTTP[404]);
+            echo $app->res->_format('json', $app->res->HTTP[404]);
         }
         /**
          * If the query is legit, but there
          * is no data in the table, then a 204
          * status should be sent
          */ elseif (empty($q) === true) {
-            echo $app->res->_type('json', $app->res->HTTP[204]);
+            echo $app->res->_format('json', $app->res->HTTP[204]);
         }
         /**
          * If we get to this point, the all is well
          * and it is ok to process the query and print
          * the results in a json format.
          */ else {
-            echo $app->res->_type('json', $q);
+            echo $app->res->_format('json', $q);
         }
     });
 
@@ -71,21 +71,21 @@ $app->group('/api', function() use ($app, $orm) {
          * is false and a 404 should be sent.
          */
         if ($results === false) {
-            echo $app->res->_type('json', $app->res->HTTP[404]);
+            echo $app->res->_format('json', $app->res->HTTP[404]);
         }
         /**
          * If the query is legit, but there
          * is no data in the table, then a 204
          * status should be sent
          */ elseif (empty($results) === true) {
-            echo $app->res->_type('json', $app->res->HTTP[204]);
+            echo $app->res->_format('json', $app->res->HTTP[204]);
         }
         /**
          * If we get to this point, the all is well
          * and it is ok to process the query and print
          * the results in a json format.
          */ else {
-            echo $app->res->_type('json', $results);
+            echo $app->res->_format('json', $results);
         }
     });
 });

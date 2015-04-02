@@ -443,8 +443,8 @@ class Liten
             $numHandled = $this->handle($this->_routes[$this->_method], true);
         // If no route was handled, trigger the 404 (if any)
         if ($numHandled == 0) {
-            if ($this->_notFound && is_callable($this->_notFound))
-                call_user_func($this->_notFound);
+            if ($this->_error && is_callable($this->_error))
+                call_user_func($this->_error);
             else
                 header($this->req->server['SERVER_PROTOCOL'] . ' 404 Not Found');
         }

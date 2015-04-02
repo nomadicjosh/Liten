@@ -7,3 +7,9 @@ $app->get('/', function () use($app, $orm) {
 
     $app->view->display('index/index', ['title' => 'Liten Framework']);
 });
+
+$app->setError(function() use($app) {
+    
+    echo $app->res->_format('json', $app->res->HTTP[404]);
+    
+});

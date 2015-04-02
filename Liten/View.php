@@ -125,8 +125,12 @@ class View
     {
         $viewPath = $this->_viewPath . $viewName . $this->ext;
 
-        if (!file_exists($viewPath)) {
-            throw new \Liten\Exception\ViewException("The view $viewPath does not exist.");
+        try {
+            if (!file_exists($viewPath)) {
+                throw new \Liten\Exception\ViewException("The view $viewPath does not exist.");
+            }
+        } catch (\Liten\Exception\ViewException $e) {
+            echo "Caught ViewException ('{$e->getMessage()}') <br />";
         }
 
         $tmpl = $this;

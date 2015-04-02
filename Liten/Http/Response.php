@@ -399,7 +399,7 @@ class Response
      * Returns data in the format specified
      * (i.e. json, txt, html)
      */
-    public function _type($format, $content)
+    public function _format($format, $content)
     {
         $this->_contentType = $this->_mime[$format];
         $this->sendStatus();
