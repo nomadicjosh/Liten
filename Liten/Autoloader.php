@@ -1,5 +1,8 @@
 <?php namespace Liten;
-if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
+
 /**
  * An example of a general-purpose implementation that includes the optional
  * functionality of allowing multiple base directories for a single namespace
@@ -46,6 +49,7 @@ if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
  */
 class Autoloader
 {
+
     /**
      * An associative array where the key is a namespace prefix and the value
      * is an array of base directories for classes in that namespace.
@@ -126,7 +130,7 @@ class Autoloader
 
             // remove the trailing namespace separator for the next iteration
             // of strrpos()
-            $prefix = rtrim($prefix, '\\');   
+            $prefix = rtrim($prefix, '\\');
         }
 
         // never found a mapped file
@@ -155,8 +159,8 @@ class Autoloader
             // replace namespace separators with directory separators
             // in the relative class name, append with .php
             $file = $base_dir
-                  . str_replace('\\', '/', $relative_class)
-                  . '.php';
+                . str_replace('\\', '/', $relative_class)
+                . '.php';
 
             // if the mapped file exists, require it
             if ($this->requireFile($file)) {

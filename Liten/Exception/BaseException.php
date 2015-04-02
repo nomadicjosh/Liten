@@ -1,11 +1,10 @@
-<?php
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
+<?php namespace Liten\Exception;
+
 /**
  * Liten - PHP 5 micro framework
  * 
  * @link        http://www.litenframework.com
- * @version     1.0.0
+ * @version     1.0.1
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -29,27 +28,28 @@ if (!defined('BASE_PATH'))
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/**
- * Error log setting
- */
-if (APP_ENV == 'DEV') {
-    /**
-     * Print errors to the screen.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'On');
-} else {
-    /**
-     * Log errors to a file.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'Off');
-    ini_set('log_errors', 'On');
-    ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
-}
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
-require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
-$loader = new \Liten\Autoloader();
-$loader->register();
-$loader->addNamespace('Liten', BASE_PATH . 'Liten' . DS);
-$loader->addNamespace('app', BASE_PATH . 'app' . DS);
+interface BaseException
+{
+    /* Protected methods inherited from Exception class */
+
+    public function getMessage();                 // Exception message 
+
+    public function getCode();                    // User-defined Exception code
+
+    public function getFile();                    // Source filename
+
+    public function getLine();                    // Source line
+
+    public function getTrace();                   // An array of the backtrace()
+
+    public function getTraceAsString();           // Formated string of trace
+
+    /* Overrideable methods inherited from Exception class */
+
+    public function __toString();                 // formated string for display
+
+    public function __construct($message = null, $code = 0);
+}

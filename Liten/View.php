@@ -1,4 +1,5 @@
 <?php namespace Liten;
+
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -27,62 +28,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
-if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+class View
+{
 
-class View {
-	
-	/**
+    /**
      * Data available to the view templates
      * @var $data
      */
     protected $_data;
-	
-	/**
-	 * The view being extended.
-	 * 
-	 * @var string
-	 */
-	protected $_extendedView;
-	
-	/**
-	 * Store the contents of blocks.
-	 * 
-	 * @var array
-	 */
-	protected $_blocks;
-	
-	/**
-	 * The currently opened (started) block.
-	 * 
-	 * @var string
-	 */
-	protected $_openBlock;
-	
-	/**
+
+    /**
+     * The view being extended.
+     * 
+     * @var string
+     */
+    protected $_extendedView;
+
+    /**
+     * Store the contents of blocks.
+     * 
+     * @var array
+     */
+    protected $_blocks;
+
+    /**
+     * The currently opened (started) block.
+     * 
+     * @var string
+     */
+    protected $_openBlock;
+
+    /**
      * View template extension
      * @var $ext
      */
     public $ext = '.php';
-	
-	/**
-	 * Store the path to the views folder.
-	 * 
-	 * @var string
-	 */
-	protected $_viewPath;
-	
-	/**
-	 * Store the path to the view.
-	 *
-	 * @param string 	$viewPath
-	 */
-	public function __construct()
-	{
-		$this->_viewPath = \Liten\Liten::getInstance()->config('view_dir');
-	}
-	
-	/**
+
+    /**
+     * Store the path to the views folder.
+     * 
+     * @var string
+     */
+    protected $_viewPath;
+
+    /**
+     * Store the path to the view.
+     *
+     * @param string 	$viewPath
+     */
+    public function __construct()
+    {
+        $this->_viewPath = \Liten\Liten::getInstance()->config('view_dir');
+    }
+
+    /**
      * Display view
      *
      * This method echoes the rendered view to the current output buffer
@@ -94,135 +96,138 @@ class View {
     {
         echo $this->render($viewName, $data);
     }
-	
-	/**
-	 * Render the given view.
-	 * 
-	 * @param  string 	$viewName
-	 * @param  array 	$data
-	 * @return string
-	 */
-	public function render($viewName, $data = null)
-	{
-		$this->_data = $data;
 
-		$view = $this->load($viewName);
+    /**
+     * Render the given view.
+     * 
+     * @param  string 	$viewName
+     * @param  array 	$data
+     * @return string
+     */
+    public function render($viewName, $data = null)
+    {
+        $this->_data = $data;
 
-		$view = ($this->_extendedView) ? $this->load($this->_extendedView) : $view;
+        $view = $this->load($viewName);
 
-		return $view;
-	}
-	
-	/**
-	 * Load the given view and return the contents.
-	 *
-	 * @param  string 	$viewName
-	 * @return string
-	 */
-	public function load($viewName)
-	{
-		$viewPath = $this->_viewPath . $viewName . $this->ext;
+        $view = ($this->_extendedView) ? $this->load($this->_extendedView) : $view;
 
-		if ( ! file_exists($viewPath)) {
-			throw new \Liten\Exception\ViewException("The view $viewPath does not exist.");
-		}
+        return $view;
+    }
 
-		$tmpl = $this;
+    /**
+     * Load the given view and return the contents.
+     *
+     * @param  string 	$viewName
+     * @return string
+     */
+    public function load($viewName)
+    {
+        $viewPath = $this->_viewPath . $viewName . $this->ext;
 
-		$extends = function($view) use ($tmpl) {
-			$tmpl->extend($view);
-		};
+        try {
+            if (!file_exists($viewPath)) {
+                throw new \Liten\Exception\ViewException("The view $viewPath does not exist.");
+            }
+        } catch (\Liten\Exception\ViewException $e) {
+            echo "Caught ViewException ('{$e->getMessage()}') <br />";
+        }
 
-		$block = function($name) use ($tmpl) {
-			$tmpl->block($name);
-		};
+        $tmpl = $this;
 
-		$end = function() use ($tmpl) {
-			echo $tmpl->stop();
-		};
+        $extends = function($view) use ($tmpl) {
+            $tmpl->extend($view);
+        };
 
-		$show = function($view) use ($tmpl) {
-			echo $tmpl->show($view);
-		};
+        $block = function($name) use ($tmpl) {
+            $tmpl->block($name);
+        };
 
-		$include = function($view) use ($tmpl) {
-			echo $tmpl->partial($view);
-		};
+        $end = function() use ($tmpl) {
+            echo $tmpl->stop();
+        };
 
-		ob_start();
-		
-		if($this->_data !== null)
-			extract($this->_data);
-		require($viewPath);
+        $show = function($view) use ($tmpl) {
+            echo $tmpl->show($view);
+        };
 
-		return ob_get_clean();
-	}
-	
-	/**
-	 * Extend a parent View.
-	 *
-	 * @param  string 	$viewName
-	 * @return void
-	 */
-	public function extend($viewName)
-	{
-		$this->_extendedView = $viewName;
-	}
+        $include = function($view) use ($tmpl) {
+            echo $tmpl->partial($view);
+        };
 
-	/**
-	 * Include a partial view.
-	 * 
-	 * @param  string 	$viewName
-	 * @return void
-	 */
-	public function partial($viewName)
-	{
-		return $this->load($viewName);
-	}
+        ob_start();
 
-	/**
-	 * Start a new block.
-	 * 
-	 * @param  string 	$name
-	 * @return void
-	 */
-	public function block($name)
-	{
-		$this->_openBlock = $name;
-		ob_start();
-	}
+        if ($this->_data !== null)
+            extract($this->_data);
+        require($viewPath);
 
-	/**
-	 * Close a section and return the buffered contents.
-	 *
-	 * @return string
-	 */
-	public function stop()
-	{
-		$name = $this->_openBlock;
+        return ob_get_clean();
+    }
 
-		$buffer = ob_get_clean();
+    /**
+     * Extend a parent View.
+     *
+     * @param  string 	$viewName
+     * @return void
+     */
+    public function extend($viewName)
+    {
+        $this->_extendedView = $viewName;
+    }
 
-		if ( ! isset($this->_blocks[$name])) {
-			$this->_blocks[$name] = $buffer;
-		} elseif (isset($this->_blocks[$name])) {
-			$this->_blocks[$name] = str_replace('@parent', $buffer, $this->_blocks[$name]);
-		}
+    /**
+     * Include a partial view.
+     * 
+     * @param  string 	$viewName
+     * @return void
+     */
+    public function partial($viewName)
+    {
+        return $this->load($viewName);
+    }
 
-		return $this->_blocks[$name];
-	}
+    /**
+     * Start a new block.
+     * 
+     * @param  string 	$name
+     * @return void
+     */
+    public function block($name)
+    {
+        $this->_openBlock = $name;
+        ob_start();
+    }
 
-	/**
-	 * Show the contents of a block.
-	 *
-	 * @param  string 	$name
-	 * @return string
-	 */
-	public function show($name)
-	{
-		if(isset($this->_blocks[$name]))
-		{
-			return $this->_blocks[$name];
-		}
-	}
+    /**
+     * Close a section and return the buffered contents.
+     *
+     * @return string
+     */
+    public function stop()
+    {
+        $name = $this->_openBlock;
+
+        $buffer = ob_get_clean();
+
+        if (!isset($this->_blocks[$name])) {
+            $this->_blocks[$name] = $buffer;
+        } elseif (isset($this->_blocks[$name])) {
+            $this->_blocks[$name] = str_replace('@parent', $buffer, $this->_blocks[$name]);
+        }
+
+        return $this->_blocks[$name];
+    }
+
+    /**
+     * Show the contents of a block.
+     *
+     * @param  string 	$name
+     * @return string
+     */
+    public function show($name)
+    {
+        if (isset($this->_blocks[$name])) {
+            return $this->_blocks[$name];
+        }
+    }
 }

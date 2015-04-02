@@ -1,11 +1,10 @@
-<?php
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
+<?php namespace Liten\Exception;
+
 /**
  * Liten - PHP 5 micro framework
  * 
  * @link        http://www.litenframework.com
- * @version     1.0.0
+ * @version     1.0.1
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -29,27 +28,30 @@ if (!defined('BASE_PATH'))
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/**
- * Error log setting
- */
-if (APP_ENV == 'DEV') {
-    /**
-     * Print errors to the screen.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'On');
-} else {
-    /**
-     * Log errors to a file.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'Off');
-    ini_set('log_errors', 'On');
-    ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
-}
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
-require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
-$loader = new \Liten\Autoloader();
-$loader->register();
-$loader->addNamespace('Liten', BASE_PATH . 'Liten' . DS);
-$loader->addNamespace('app', BASE_PATH . 'app' . DS);
+abstract class LitenException extends \Exception implements BaseException
+{
+
+    protected $message = 'Unknown exception';     // Exception message
+    private $string;                            // Unknown
+    protected $code = 0;                       // User-defined exception code
+    protected $file;                              // Source filename of exception
+    protected $line;                              // Source line of exception
+    private $trace;                             // Unknown
+
+    public function __construct($message = null, $code = 0)
+    {
+        if (!$message) {
+            throw new $this('Unknown ' . get_class($this));
+        }
+        parent::__construct($message, $code);
+    }
+
+    public function __toString()
+    {
+        return get_class($this) . " '{$this->message}' in {$this->file}({$this->line})\n"
+            . "{$this->getTraceAsString()}";
+    }
+}

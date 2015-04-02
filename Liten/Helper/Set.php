@@ -1,4 +1,5 @@
 <?php namespace Liten\Helper;
+
 /**
  * Liten - PHP 5 micro framework
  * 
@@ -27,17 +28,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-if ( ! defined('BASE_PATH')) exit('No direct script access allowed');
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
 
 /**
  * Borrowed this class from the Slim Framework.
  */
-
 class Set implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-	
-	/**
+
+    /**
      * Key-value array of arbitrary data
      * @var array
      */
@@ -51,8 +51,8 @@ class Set implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $this->replace($items);
     }
-	
-	/**
+
+    /**
      * Set data key to value
      * @param string $key   The data key
      * @param mixed  $value The data value
