@@ -47,6 +47,12 @@ class Request
     public $server = [];
 
     /**
+     * URI prefix
+     * @var string
+     */
+    public $prefix;
+
+    /**
      * Constructor Function
      */
     public function __construct()
@@ -161,12 +167,13 @@ class Request
     /**
      * Returns url based on protocol, route and prefix.
      */
-    public function url_for($route, $prefix = null)
+    public function url_for($route)
     {
-        if ($prefix === null) {
-            return $this->protocol() . $this->getHost() . $route;
-        }
-        return $this->protocol() . ($prefix !== null ? $prefix . '.' : '') . $this->getHost() . $route;
+        $base = $this->server['HTTP_HOST'] . $this->server['SCRIPT_NAME'];
+        $index = str_replace('index.php', '', $base);
+        $url = rtrim($index, '/');
+
+        return $this->protocol() . (isset($this->prefix) ? $this->prefix . '.' : '') . $url . $route;
     }
 
     /**

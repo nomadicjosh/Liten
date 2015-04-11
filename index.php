@@ -58,7 +58,18 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
 $app = new \Liten\Liten();
 
 /**
- * Step 3: Require a functions file
+ * Step 3: Include database config file
+ * 
+ * This is an example of loaded a database config
+ * file when calling an application that needs
+ * database connection.
+ */
+if(file_exists( BASE_PATH . 'config.php' )) {
+    include( BASE_PATH . 'config.php' );
+}
+
+/**
+ * Step 4: Require a functions file
  *
  * A functions file may include any dependency injections
  * or prelimary functions for your application.
@@ -66,7 +77,7 @@ $app = new \Liten\Liten();
 require( APP_PATH . 'functions.php' );
 
 /**
- * Step 4: Include the routers needed
+ * Step 5: Include the routers needed
  *
  * Here we loop through the routers directory in order
  * to include routes needed at runtime. This helps
@@ -79,7 +90,7 @@ foreach ($routers as $router) {
 }
 
 /**
- * Step 5: Run the Liten application
+ * Step 6: Run the Liten application
  *
  * This method should be called last. This executes the Liten application
  * and returns the HTTP response to the HTTP client.
