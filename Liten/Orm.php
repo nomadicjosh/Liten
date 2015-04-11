@@ -1656,4 +1656,14 @@ class Orm implements \IteratorAggregate
     {
         return str_replace("%this.", $this->getTableAlias() . ".", $column);
     }
+    
+    /**
+     * Retrieves the ID of the last record
+     * inserted.
+     * 
+     * @return primaryKey
+     */
+    public function lastInsertId() {
+        return $this->pdo->lastInsertId();
+    }
 }
