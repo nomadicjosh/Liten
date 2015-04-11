@@ -23,6 +23,10 @@ Minimum of PHP version 5.4
 There are a few libraries available that you can drop into app/src/. The libraries have their 
 own [repository] (https://github.com/7mediaws/Liten-Libraries).
 
+## Sample Application
+
+The [Liten Blog] (https://github.com/7mediaws/Liten-Blog) is a sample application to show what you can do with the Liten Framework.
+
 ## Documentation & Community
 
 Would love to have your input and help into making Liten a small but yet powerful micro framework. Head on over to 

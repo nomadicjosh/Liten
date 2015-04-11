@@ -37,7 +37,7 @@ class Liten
     /**
      * @var string
      */
-    public $version = '1.0.1';
+    public $version = '1.0.2';
 
     /**
      * @var \Liten\Helper\Set
@@ -186,6 +186,7 @@ class Liten
             // Secure Cookies
             'cookies.crypt'         => 'sha256',
             'cookies.secret.key'    => '8sh8w82j9s71092iw8usi',
+            'cookies.savepath'      => '/tmp/',
             // Directories
             'view_dir'              => APP_PATH . 'views' . DS,
             'layouts_dir'           => APP_PATH . 'views' . DS . '_layouts' . DS,
