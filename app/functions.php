@@ -30,28 +30,13 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-/* function db() {
-  $pdo = new \PDO("mysql:host=host;dbname=name",user,pass);
-  $connection = new \Liten\Orm($pdo);
-  return $connection;
-  }
-  $orm = db(); */
-
-
-// Alternative connection with DI
-/* $app->inst->singleton('db', function () {
-  $pdo = new \PDO("mysql:host=host;dbname=name",user,pass);
-  return new \Liten\Orm($pdo);
-  });
-  $db = $app->inst->db; */
-
 /**
- * Returns the url based on route and prefix.
+ * Returns the url based on route.
  */
-function url($route, $prefix = null)
+function url($route)
 {
     $app = \Liten\Liten::getInstance();
-    $url = $app->req->url_for($route, $prefix);
+    $url = $app->req->url_for($route);
     return $url;
 }
 
@@ -409,3 +394,89 @@ if (!function_exists('hash_equals')) {
         return $ret === 0;
     }
 }
+
+/**
+ 	* Outputs the html checked attribute.
+ 	*
+ 	* Compares the first two arguments and if identical marks as checked
+ 	*
+ 	*
+ 	* @param mixed $checked One of the values to compare
+ 	* @param mixed $current (true) The other value to compare if not just true
+ 	* @param bool $echo Whether to echo or just return the string
+ 	* @return string html attribute or empty string
+ 	*/
+ 	if( !function_exists('checked') ) {
+ 		
+	 	function checked( $checked, $current = true, $echo = true ) {
+			return checked_selected_helper( $checked, $current, $echo, 'checked' );
+		}
+	
+	}
+
+	/**
+ 	* Outputs the html selected attribute.
+ 	*
+ 	* Compares the first two arguments and if identical marks as selected
+ 	*
+ 	*
+ 	* @param mixed $selected One of the values to compare
+ 	* @param mixed $current (true) The other value to compare if not just true
+ 	* @param bool $echo Whether to echo or just return the string
+ 	* @return string html attribute or empty string
+ 	*/
+ 	if( !function_exists('selected') ) {
+ 		
+	 	function selected( $selected, $current = true, $echo = true ) {
+			return checked_selected_helper( $selected, $current, $echo, 'selected' );
+		}
+	
+	}
+
+	/**
+ 	* Outputs the html disabled attribute.
+ 	*
+ 	* Compares the first two arguments and if identical marks as disabled
+ 	*
+ 	*
+ 	* @param mixed $disabled One of the values to compare
+ 	* @param mixed $current (true) The other value to compare if not just true
+ 	* @param bool $echo Whether to echo or just return the string
+ 	* @return string html attribute or empty string
+ 	*/
+ 	if( !function_exists('disabled') ) {
+ 		
+		function disabled( $disabled, $current = true, $echo = true ) {
+			return checked_selected_helper( $disabled, $current, $echo, 'disabled' );
+		}
+	
+	}
+
+	/**
+ 	* Private helper function for checked, selected, and disabled.
+ 	*
+ 	* Compares the first two arguments and if identical marks as $type
+ 	*
+ 	* @access private
+ 	*
+ 	* @param any $helper One of the values to compare
+ 	* @param any $current (true) The other value to compare if not just true
+ 	* @param bool $echo Whether to echo or just return the string
+ 	* @param string $type The type of checked|selected|disabled we are doing
+ 	* @return string html attribute or empty string
+ 	*/
+ 	if( !function_exists('checked_selected_helper') ) {
+ 		
+	 	function checked_selected_helper( $helper, $current, $echo, $type ) {
+			if ( $helper === $current )
+				$result = " $type='$type'";
+			else
+				$result = '';
+	
+			if ( $echo )
+				echo $result;
+	
+			return $result;
+		}
+	
+	}
