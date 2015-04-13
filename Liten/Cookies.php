@@ -40,9 +40,9 @@ class Cookies
      */
     protected $_app;
 
-    public function __construct()
+    public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = \Liten\Liten::getInstance();
+        $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
     
     /**
