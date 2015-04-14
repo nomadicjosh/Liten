@@ -1034,6 +1034,17 @@ class Orm implements \IteratorAggregate
      * ----------------------------------------------------------------------------- */
 
     /**
+     * Retrieves the ID of the last record
+     * inserted.
+     * 
+     * @return primaryKey
+     */
+    public function lastInsertId($pk = null)
+    {
+        return $this->pdo->lastInsertId($pk);
+    }
+
+    /**
      * Insert new rows
      * $data can be 2 dimensional to add a bulk insert
      * If a single row is inserted, it will return it's row instance
@@ -1077,7 +1088,7 @@ class Orm implements \IteratorAggregate
         // On single element return the object
         if ($rowCount == 1) {
             $primaryKeyname = $this->getPrimaryKeyname();
-            $data[$primaryKeyname] = $this->pdo->lastInsertId($primaryKeyname);
+            $data[$primaryKeyname] = $this->lastInsertId($primaryKeyname);
             return $this->fromArray($data);
         }
 
@@ -1169,6 +1180,49 @@ class Orm implements \IteratorAggregate
         } else {
             return $this->rowCount();
         }
+    }
+    /* ------------------------------------------------------------------------------
+      PDO Transactions
+     * ----------------------------------------------------------------------------- */
+
+    /**
+     * Initiates a transaction.
+     * 
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        return $this->pdo->beginTransaction();
+    }
+
+    /**
+     * Checks if inside transaction.
+     * 
+     * @return bool
+     */
+    public function inTransaction()
+    {
+        return $this->pdo->inTransaction();
+    }
+
+    /**
+     * Commits a transaction
+     * 
+     * @return bool
+     */
+    public function commit()
+    {
+        return $this->pdo->commit();
+    }
+
+    /**
+     * Rolls back a transaction.
+     * 
+     * @return bool
+     */
+    public function rollBack()
+    {
+        return $this->pdo->rollBack();
     }
     /* ------------------------------------------------------------------------------
       Set & Save
@@ -1655,15 +1709,5 @@ class Orm implements \IteratorAggregate
     public function formatColumnName($column)
     {
         return str_replace("%this.", $this->getTableAlias() . ".", $column);
-    }
-    
-    /**
-     * Retrieves the ID of the last record
-     * inserted.
-     * 
-     * @return primaryKey
-     */
-    public function lastInsertId() {
-        return $this->pdo->lastInsertId();
     }
 }
