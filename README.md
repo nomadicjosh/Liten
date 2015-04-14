@@ -1,4 +1,6 @@
 # Liten
+
+[![Join the chat at https://gitter.im/parkerj/Liten](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/parkerj/Liten?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Liten is a small, simple, and restful micro framework. Even though it is small, you can still use it to build 
 intelligent and dynamic restful api's.
 
