@@ -33,6 +33,13 @@ if (!defined('BASE_PATH'))
 
 class View
 {
+    
+    /**
+     * Liten application object
+     * 
+     * @var object/callable 
+     */
+    protected $_app;
 
     /**
      * Data available to the view templates
@@ -73,15 +80,11 @@ class View
      * @var string
      */
     protected $_viewPath;
-
-    /**
-     * Store the path to the view.
-     *
-     * @param string 	$viewPath
-     */
-    public function __construct()
+    
+    public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_viewPath = \Liten\Liten::getInstance()->config('view_dir');
+        $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->_viewPath = $this->_app->config('view_dir');
     }
 
     /**

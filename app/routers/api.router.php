@@ -1,15 +1,55 @@
 <?php
+/**
+ * Liten - PHP 5 micro framework
+ * 
+ * @link        http://www.litenframework.com
+ * @version     1.0.0
+ * @package		Liten
+ * 
+ * The MIT License (MIT)
+ * Copyright (c) 2015 Joshua Parker
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+
+/**
+ * Before router middleware checks for a valid
+ * api key.
+ */
+$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/api.*', function() use ($app) {
+    if ($app->req->_get('key') !== $app->hook->get_option('api_key') || $app->hook->get_option('api_key') === null) {
+        $app->res->_format('json', 401);
+        exit();
+    }
+});
 
 // RESTful API
 $app->group('/api', function() use ($app, $orm) {
 
     /**
-     * Will result in /api/.
+     * Will result in /api/ which is the root
+     * of the api and contains no content.
      */
     $app->get('/', function () use($app) {
-        echo $app->res->_format('json', $app->res->HTTP[204]);
+        $app->res->_format('json', 204);
     });
 
     /**
@@ -32,21 +72,23 @@ $app->group('/api', function() use ($app, $orm) {
          * is false and a 404 should be sent.
          */
         if ($q === false) {
-            echo $app->res->_format('json', $app->res->HTTP[404]);
+            $app->res->_format('json', 404);
         }
         /**
          * If the query is legit, but there
-         * is no data in the table, then a 204
-         * status should be sent
+         * is no data in the table, then a 200
+         * status should be sent. Why? Check out
+         * the accepted answer at
+         * http://stackoverflow.com/questions/13366730/proper-rest-response-for-empty-table/13367198#13367198
          */ elseif (empty($q) === true) {
-            echo $app->res->_format('json', $app->res->HTTP[204]);
+            $app->res->_format('json');
         }
         /**
          * If we get to this point, the all is well
          * and it is ok to process the query and print
          * the results in a json format.
          */ else {
-            echo $app->res->_format('json', $q);
+            $app->res->_format('json', 200, $q);
         }
     });
 
@@ -71,21 +113,140 @@ $app->group('/api', function() use ($app, $orm) {
          * is false and a 404 should be sent.
          */
         if ($results === false) {
-            echo $app->res->_format('json', $app->res->HTTP[404]);
+            $app->res->_format('json', 404);
         }
         /**
          * If the query is legit, but there
-         * is no data in the table, then a 204
-         * status should be sent
+         * is no data in the table, then a 200
+         * status should be sent. Why? Check out
+         * the accepted answer at
+         * http://stackoverflow.com/questions/13366730/proper-rest-response-for-empty-table/13367198#13367198
          */ elseif (empty($results) === true) {
-            echo $app->res->_format('json', $app->res->HTTP[204]);
+            $app->res->_format('json');
         }
         /**
          * If we get to this point, the all is well
          * and it is ok to process the query and print
          * the results in a json format.
          */ else {
-            echo $app->res->_format('json', $results);
+            $app->res->_format('json', 200, $results);
+        }
+    });
+
+    $app->delete('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app, $orm) {
+
+        $query = [
+                sprintf('DELETE FROM %s WHERE %s = ?', $table, $field),
+        ];
+
+        $query = sprintf('%s;', implode(' ', $query));
+        $result = $orm->query($query, [$id]);
+
+        if ($result === false) {
+            $app->res->_format('json', 404);
+        } else if (empty($result) === true) {
+            $app->res->_format('json', 204);
+        } else {
+            $app->res->_format('json');
+        }
+    });
+
+    if (in_array($http = strtoupper($_SERVER['REQUEST_METHOD']), ['POST', 'PUT']) === true) {
+        if (preg_match('~^\x78[\x01\x5E\x9C\xDA]~', $data = file_get_contents('php://input')) > 0) {
+            $data = gzuncompress($data);
+        }
+        if ((array_key_exists('CONTENT_TYPE', $_SERVER) === true) && (empty($data) !== true)) {
+            if (strncasecmp($_SERVER['CONTENT_TYPE'], 'application/json', 16) === 0) {
+                $GLOBALS['_' . $http] = json_decode($data, true);
+            } else if ((strncasecmp($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded', 33) === 0) && (strncasecmp($_SERVER['REQUEST_METHOD'], 'PUT', 3) === 0)) {
+                parse_str($data, $GLOBALS['_' . $http]);
+            }
+        }
+        if ((isset($GLOBALS['_' . $http]) !== true) || (is_array($GLOBALS['_' . $http]) !== true)) {
+            $GLOBALS['_' . $http] = [];
+        }
+        unset($data);
+    }
+
+    $app->post('/(\w+)/', function($table) use($app, $orm) {
+
+        if (empty($_POST) === true) {
+            $app->res->_format('json', 204);
+        } elseif (is_array($_POST) === true) {
+            $queries = [];
+
+            if (count($_POST) == count($_POST, COUNT_RECURSIVE)) {
+                $_POST = [$_POST];
+            }
+
+            foreach ($_POST as $row) {
+                $data = [];
+
+                foreach ($row as $key => $value) {
+                    $data[sprintf('%s', $key)] = $value;
+                }
+
+                $query = [
+                        sprintf('INSERT INTO %s (%s) VALUES (%s)', $table, implode(', ', array_keys($data)), implode(', ', array_fill(0, count($data), '?'))),
+                ];
+
+                $queries[] = [
+                        sprintf('%s;', implode(' ', $query)),
+                        $data,
+                ];
+            }
+
+            if (count($queries) > 1) {
+                $orm->query()->beginTransaction();
+
+                while (is_null($query = array_shift($queries)) !== true) {
+                    if (($result = $orm->query($query[0], array_values($query[1]))) === false) {
+                        $orm->query->rollBack();
+                        break;
+                    }
+                }
+
+                if (($result !== false) && ($orm->query->inTransaction() === true)) {
+                    $result = $orm->query()->commit();
+                }
+            } else if (is_null($query = array_shift($queries)) !== true) {
+                $result = $orm->query($query[0], array_values($query[1]));
+            }
+
+            if ($result === false) {
+                $app->res->_format('json', 409);
+            } else {
+                $app->res->_format('json', 201);
+            }
+        }
+    });
+
+    $app->put('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app, $orm) {
+
+        if (empty($GLOBALS['_PUT']) === true) {
+            $app->res->_format('json', 204);
+        } else if (is_array($GLOBALS['_PUT']) === true) {
+            $data = [];
+
+            foreach ($GLOBALS['_PUT'] as $key => $value) {
+                $data[$key] = sprintf('%s = ?', $key);
+            }
+
+            $query = [
+                    sprintf('UPDATE %s SET %s WHERE %s = ?', $table, implode(', ', $data), $field),
+            ];
+
+            $query = sprintf('%s;', implode(' ', $query));
+            $values = array_values($GLOBALS['_PUT']);
+            $result = $orm->query($query, array_merge($values, [$id]));
+
+            if ($result === false) {
+                $app->res->_format('json', 409);
+            } else if (empty($result) === true) {
+                $app->res->_format('json', 204);
+            } else {
+                $app->res->_format('json');
+            }
         }
     });
 });

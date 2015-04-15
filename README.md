@@ -1,4 +1,7 @@
 # Liten
+
+[![Join the chat at https://gitter.im/parkerj/Liten](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/parkerj/Liten?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Liten is a small, simple, and restful micro framework. Even though it is small, you can still use it to build 
 intelligent and dynamic restful api's.
 
@@ -21,11 +24,11 @@ Minimum of PHP version 5.4
 ## Liten Libraries
 
 There are a few libraries available that you can drop into app/src/. The libraries have their 
-own [repository] (https://github.com/7mediaws/Liten-Libraries).
+own [repository] (https://github.com/parkerj/Liten-Libraries).
 
 ## Sample Application
 
-The [Liten Blog] (https://github.com/7mediaws/Liten-Blog) is a sample application to show what you can do with the Liten Framework.
+The [Liten Blog] (https://github.com/parkerj/Liten-Blog) is a sample application to show what you can do with the Liten Framework.
 
 ## Documentation & Community
 
