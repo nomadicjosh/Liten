@@ -68,7 +68,8 @@ class Response
      * Property: headers
      * All of the headers set for response (can clear with clearHeaders() and add with header())
      */
-    protected $headers = [];
+    protected $_headers = [];
+    
     public $HTTP = [
         //Informational 1xx
         100 => [
@@ -252,17 +253,8 @@ class Response
     /**
      * Constructor Function
      */
-    public function __construct($content = null, $status = 200)
+    public function __construct()
     {
-        // Allow composition of response objects
-        $class = __CLASS__;
-        if ($content instanceof $class) {
-            $this->_content = $content->content();
-            $this->_status = $content->status();
-        } else {
-            $this->_content = $content;
-            $this->_status = $status;
-        }
         $this->_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'http';
     }
 
@@ -293,7 +285,7 @@ class Response
         } else {
             $this->_headers[$type] = $content;
         }
-        return $this;
+        return;
     }
 
     /**
@@ -310,10 +302,10 @@ class Response
     public function status($status = null)
     {
         if (null === $status) {
-            return $this->HTTP[$this->_status];
+            return $this->_status;
         }
-        $this->_status = $this->HTTP[$status];
-        return $this;
+        $this->_status = $status;
+        return $this->_status;
     }
 
     /**
@@ -325,7 +317,7 @@ class Response
             return $this->_encoding;
         }
         $this->_encoding = $encoding;
-        return $this;
+        return $this->_encoding;
     }
 
     /**
@@ -356,7 +348,7 @@ class Response
             return $this->_contentType;
         }
         $this->_contentType = $contentType;
-        return $this;
+        return $this->_contentType;
     }
 
     /**
@@ -365,7 +357,7 @@ class Response
     public function clearHeaders()
     {
         $this->_headers = [];
-        return $this;
+        return $this->_headers;
     }
 
     /**
@@ -374,7 +366,7 @@ class Response
     protected function sendStatus()
     {
         // Send HTTP Header
-        header($this->_protocol . " " . $this->_status . " " . $this->HTTP[$this->_status['status']]);
+        header($this->_protocol . " " . $this->_status . " " . $this->_content);
     }
 
     /**
@@ -384,6 +376,21 @@ class Response
     {
         if (isset($this->_contentType)) {
             header('Content-Type: ' . $this->_contentType . "; charset=" . $this->_encoding);
+        }
+
+        // Send all headers
+        foreach ($this->_headers as $key => $value) {
+            if (is_null($value)) {
+                continue;
+            }
+            if (is_array($value)) {
+                foreach ($value as $content) {
+                    header($key . ': ' . $content, false);
+                }
+                continue;
+            }
+
+            header($key . ": " . $value);
         }
     }
 
@@ -395,17 +402,29 @@ class Response
         echo $this->_content;
     }
 
-    /**
-     * Returns data in the format specified
-     * (i.e. json, txt, html)
-     */
-    public function _format($format, $content)
+    public function _format($format = 'html', $status = 200, $data = null)
     {
+
+        foreach ($this->HTTP[$status] as $key => $value) {
+            $content = $value['status'];
+        }
+
         $this->_contentType = $this->_mime[$format];
-        $this->sendStatus();
-        $this->sendHeaders();
-        if ($format === 'json')
-            $content = json_encode($content, JSON_PRETTY_PRINT);
-        return $content;
+
+        $this->_content = $content;
+        $this->_status = $status;
+
+        if (!headers_sent()) {
+            $this->sendStatus();
+            $this->sendHeaders();
+        }
+
+        if ($format === 'json' && $data === null) {
+            echo json_encode($this->HTTP[$status], JSON_PRETTY_PRINT);
+        } elseif ($format === 'json' && $data !== null) {
+            echo json_encode($data, JSON_PRETTY_PRINT);
+        } else {
+            return;
+        }
     }
 }

@@ -10,6 +10,6 @@ $app->get('/', function () use($app, $orm) {
 
 $app->setError(function() use($app) {
     
-    echo $app->res->_format('json', $app->res->HTTP[404]);
+    $app->res->_format('json', 404);
     
 });

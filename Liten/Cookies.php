@@ -40,9 +40,9 @@ class Cookies
      */
     protected $_app;
 
-    public function __construct()
+    public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = \Liten\Liten::getInstance();
+        $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
     
     /**
@@ -130,12 +130,12 @@ class Cookies
         );
     }
     
-    public function getSecureCookie($token)
+    public function getSecureCookie($key)
     {
-        $file = $this->_app->config('cookies.savepath').'cookies.'.$this->getCookieVars($token,'data');
+        $file = $this->_app->config('cookies.savepath').'cookies.'.$this->getCookieVars($key,'data');
         if(file_exists($file)) {
             $data = $this->_app->hook->maybe_unserialize(file_get_contents($file));
-            return $data[$token];
+            return $data[$key];
         }
         return false;
     }
@@ -177,14 +177,14 @@ class Cookies
     /**
      * Extracts data from the cookie string.
      * 
-     * @param type $token
+     * @param type $key
      * @param type $str
      * @return array
      */
-    public function getCookieVars($token, $str)
+    public function getCookieVars($key, $str)
     {
         $vars = [];
-        parse_str($_COOKIE[$token], $vars);
+        parse_str($_COOKIE[$key], $vars);
         return $vars[$str];
     }
 
@@ -194,9 +194,9 @@ class Cookies
      *
      * @return string Cookie data var
      * */
-    public function getCookieData($cookie)
+    public function getCookieData($key)
     {
-        return $this->getCookieVars($cookie, 'data');
+        return $this->getCookieVars($key, 'data');
     }
 
     /**
@@ -205,7 +205,7 @@ class Cookies
      * @param string $cookie String from the client
      * @return bool
      */
-    public function verifySecureCookie($cookie)
+    public function verifySecureCookie($key)
     {
         $cookieFile = glob($this->_app->config('cookies.savepath').'cookies.*');
         foreach($cookieFile as $file) {
@@ -221,15 +221,15 @@ class Cookies
             unlink($file);
         }
         
-        if ($this->getCookieVars($cookie, 'exp') === null || $this->getCookieVars($cookie, 'exp') < time()) {
+        if ($this->getCookieVars($key, 'exp') === null || $this->getCookieVars($key, 'exp') < time()) {
             // The cookie has expired
             return false;
         }
 
-        $mac = sprintf("exp=%s&data=%s", urlencode($this->getCookieVars($cookie, 'exp')), urlencode($this->getCookieVars($cookie, 'data')));
-        $key = hash_hmac($this->_app->config('cookies.crypt'), $mac, $this->_app->config('cookies.secret.key'));
+        $mac = sprintf("exp=%s&data=%s", urlencode($this->getCookieVars($key, 'exp')), urlencode($this->getCookieVars($key, 'data')));
+        $hash = hash_hmac($this->_app->config('cookies.crypt'), $mac, $this->_app->config('cookies.secret.key'));
 
-        if (!hash_equals($this->getCookieVars($cookie, 'digest'), $key)) {
+        if (!hash_equals($this->getCookieVars($key, 'digest'), $hash)) {
             // The cookie has been compromised
             return false;
         }
