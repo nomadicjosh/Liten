@@ -56,6 +56,21 @@ $app->group('/api', function() use ($app, $orm) {
      * Will result in /api/dbtable/
      */
     $app->get('/(\w+)', function ($table) use($app, $orm) {
+        
+        if(isset($_GET['by']) === true) {
+            if(isset($_GET['order']) !== true) {
+                $_GET['order'] = 'ASC';
+            }
+            $table->orderBy($_GET['by'], $_GET['order']);
+        }
+        
+        if(isset($_GET['limit']) === true) {
+            $table->limit($_GET['limit']);
+            if(isset($_GET['offset']) === true) {
+                $table->offset($_GET['offset']);
+            }
+        }
+        
         $table = $orm->$table();
         /**
          * Use closure as callback.
