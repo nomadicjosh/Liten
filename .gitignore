@@ -1,3 +1,5 @@
 .DS_Store 
 app/tmp/logs/*.txt
 /nbproject/
+composer.phar
+composer.lock
