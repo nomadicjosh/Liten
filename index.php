@@ -50,7 +50,7 @@ $app = new \Liten\Liten();
  * Step 3: Include the routes needed
  */
 // GET route
-$app->get('/', function () {
+$app->get('/', function () use($app) {
     $template = <<<EOT
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -132,7 +132,7 @@ p, ol {
                       </tr>
 </table>
 
-		<div data-signal-editable="Sociable" data-signal-content-type="layout" class="sociable"></div>	
+		<div data-signal-editable="Sociable" data-signal-content-type="layout" class="sociable">version $app->version</div>	
 
             </td>
                 </tr>
