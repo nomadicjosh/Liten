@@ -1,6 +1,6 @@
 <?php namespace Liten\Tests;
 
-use Liten\Liten;
+use \Liten\Liten;
 
 class LitenTest extends \PHPUnit_Framework_TestCase
 {
