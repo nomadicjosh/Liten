@@ -1,6 +1,4 @@
 <?php
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
 /**
  * Liten - PHP 5 micro framework
  * 

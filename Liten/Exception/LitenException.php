@@ -28,9 +28,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
-
 abstract class LitenException extends \Exception implements BaseException
 {
 

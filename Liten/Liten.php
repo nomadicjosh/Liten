@@ -28,9 +28,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
-
 class Liten
 {
 
@@ -178,18 +175,18 @@ class Liten
     {
         return [
             // Cookies
-            'cookies.lifetime'      => '1440',
-            'cookies.path'          => '/',
-            'cookies.domain'        => null,
-            'cookies.secure'        => false,
-            'cookies.httponly'      => false,
+            'cookies.lifetime' => '1440',
+            'cookies.path' => '/',
+            'cookies.domain' => null,
+            'cookies.secure' => false,
+            'cookies.httponly' => false,
             // Secure Cookies
-            'cookies.crypt'         => 'sha256',
-            'cookies.secret.key'    => '8sh8w82j9s71092iw8usi',
-            'cookies.savepath'      => '/tmp/',
+            'cookies.crypt' => 'sha256',
+            'cookies.secret.key' => '8sh8w82j9s71092iw8usi',
+            'cookies.savepath' => '/tmp/',
             // Directories
-            'view_dir'              => APP_PATH . 'views' . DS,
-            'routers_dir'           => APP_PATH . 'routers' . DS
+            'view_dir' => APP_PATH . 'views' . DS,
+            'routers_dir' => APP_PATH . 'routers' . DS
         ];
     }
 

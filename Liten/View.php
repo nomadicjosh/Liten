@@ -28,12 +28,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
-
 class View
 {
-    
+
     /**
      * Liten application object
      * 
@@ -80,7 +77,7 @@ class View
      * @var string
      */
     protected $_viewPath;
-    
+
     public function __construct(\Liten\Liten $liten = null)
     {
         $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();

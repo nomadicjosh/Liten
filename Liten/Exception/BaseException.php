@@ -28,9 +28,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
-
 interface BaseException
 {
     /* Protected methods inherited from Exception class */
