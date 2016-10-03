@@ -185,8 +185,8 @@ class Liten
             'cookies.secret.key' => '8sh8w82j9s71092iw8usi',
             'cookies.savepath' => '/tmp/',
             // Directories
-            'view_dir' => APP_PATH . 'views' . DS,
-            'routers_dir' => APP_PATH . 'routers' . DS
+            'view_dir' => '../views/',
+            'routers_dir' => '../routers'
         ];
     }
 

@@ -29,7 +29,6 @@
  */
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH') or define('BASE_PATH', __DIR__ . '/../');
-defined('APP_PATH') or define('APP_PATH', BASE_PATH . 'app' . DS);
 
 require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
 $loader = new \Liten\Autoloader();
