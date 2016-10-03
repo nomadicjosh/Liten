@@ -1,13 +1,13 @@
 <?php namespace Liten\Tests;
 
-use \Liten\Liten;
+use Liten\Liten;
 
 class LitenTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testMapRouting()
     {
-        $app = \Liten\Liten();
+        $app = Liten();
 
         $app->get('/foo/', function () {
             return 'get foo';
