@@ -4,8 +4,8 @@ if (!defined('BASE_PATH'))
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        http://www.litenframework.com
- * @version     1.0.0
+ * @link        https://www.litenframework.com
+ * @since       1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -45,11 +45,10 @@ if (APP_ENV == 'DEV') {
     error_reporting(E_ALL & ~E_NOTICE);
     ini_set('display_errors', 'Off');
     ini_set('log_errors', 'On');
-    ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+    ini_set('error_log', BASE_PATH . DS . 'error.' . date('m-d-Y') . '.txt');
 }
 
 require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
 $loader = new \Liten\Autoloader();
 $loader->register();
 $loader->addNamespace('Liten', BASE_PATH . 'Liten' . DS);
-$loader->addNamespace('app', BASE_PATH . 'app' . DS);
