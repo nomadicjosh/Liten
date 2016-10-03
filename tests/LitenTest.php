@@ -1,8 +1,8 @@
-<?php namespace Tests;
+<?php namespace Liten\Tests;
 
-use \Liten;
+use \Liten\Liten;
 
-class RouterTest extends \PHPUnit_Framework_TestCase
+class LitenTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testMapRouting()
