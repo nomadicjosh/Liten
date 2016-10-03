@@ -1,5 +1,9 @@
 # Liten
 
+[![Build Status](https://travis-ci.org/parkerj/Liten.svg)](https://travis-ci.org/parkerj/Liten)
+[![Latest Stable Version](https://poser.pugx.org/liten/liten/v/stable)](https://packagist.org/packages/liten/liten)
+[![Total Downloads](https://poser.pugx.org/liten/liten/downloads)](https://packagist.org/packages/liten/liten)
+[![License](https://poser.pugx.org/liten/liten/license)](https://packagist.org/packages/liten/liten)
 [![Join the chat at https://gitter.im/parkerj/Liten](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/parkerj/Liten?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Liten is a small and simple microframework. Even though it is small, you can still use it to build intelligent and dynamic restful api's.

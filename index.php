@@ -38,7 +38,7 @@ defined('DS')           or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH')    or define('BASE_PATH', __DIR__ . DS);
 
 /**
- * Step 1: Require the Bootstrap
+ * Step 2: Require the Bootstrap
  *
  * The bootstrap includes defines as well as autoloader
  * in order to have a working install of Liten.
@@ -46,7 +46,7 @@ defined('BASE_PATH')    or define('BASE_PATH', __DIR__ . DS);
 require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
 
 /**
- * Step 2: Instantiate a Liten application
+ * Step 3: Instantiate a Liten application
  *
  * This example instantiates a Liten application using
  * its default settings. However, you can configure
@@ -56,7 +56,7 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
 $app = new \Liten\Liten();
 
 /**
- * Step 3: Include the routes needed
+ * Step 4: Include the routes needed
  */
 
 // GET route
@@ -178,7 +178,7 @@ $app->delete('/delete',function () {
 );
 
 /**
- * Step 4: Run the Liten application
+ * Step 5: Run the Liten application
  *
  * This method should be called last. This executes the Liten application
  * and returns the HTTP response to the HTTP client.
