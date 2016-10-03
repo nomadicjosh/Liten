@@ -27,25 +27,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-/**
- * Error log setting
- */
-if (APP_ENV == 'DEV') {
-    /**
-     * Print errors to the screen.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'On');
-} else {
-    /**
-     * Log errors to a file.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'Off');
-    ini_set('log_errors', 'On');
-    ini_set('error_log', BASE_PATH . DS . 'error.' . date('m-d-Y') . '.txt');
-}
-
 require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
 $loader = new \Liten\Autoloader();
 $loader->register();
