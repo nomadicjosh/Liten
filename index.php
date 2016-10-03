@@ -34,8 +34,8 @@
  * with the autoloader and the loading of other
  * needed functions and files.
  */
-defined('DS')           or define('DS', DIRECTORY_SEPARATOR);
-defined('BASE_PATH')    or define('BASE_PATH', __DIR__ . DS);
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+defined('BASE_PATH') or define('BASE_PATH', __DIR__ . DS);
 
 /**
  * Step 2: Require the Bootstrap
@@ -58,10 +58,9 @@ $app = new \Liten\Liten();
 /**
  * Step 4: Include the routes needed
  */
-
 // GET route
 $app->get('/', function () {
-        $template = <<<EOT
+    $template = <<<EOT
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -161,20 +160,20 @@ p, ol {
 </body>
 </html>
 EOT;
-        echo $template;
-    }
+    echo $template;
+}
 );
 
 // POST route
-$app->post('/post',function () {
-        echo 'Example of a post route.';
-    }
+$app->post('/post', function () {
+    echo 'Example of a post route.';
+}
 );
 
 // DELETE route
-$app->delete('/delete',function () {
-        echo 'Example of a delete route.';
-    }
+$app->delete('/delete', function () {
+    echo 'Example of a delete route.';
+}
 );
 
 /**

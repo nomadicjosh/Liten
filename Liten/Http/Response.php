@@ -28,9 +28,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
-
 class Response
 {
 
@@ -69,7 +66,6 @@ class Response
      * All of the headers set for response (can clear with clearHeaders() and add with header())
      */
     protected $_headers = [];
-    
     public $HTTP = [
         //Informational 1xx
         100 => [

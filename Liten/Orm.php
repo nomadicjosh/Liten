@@ -57,9 +57,6 @@ use \ArrayIterator,
     \PDO,
     \DateTime;
 
-if (!defined('BASE_PATH'))
-    exit('No direct script access allowed');
-
 class Orm implements \IteratorAggregate
 {
 
