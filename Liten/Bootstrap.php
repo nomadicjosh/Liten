@@ -27,6 +27,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+defined('BASE_PATH') or define('BASE_PATH', __DIR__ . '/../');
+
 require( BASE_PATH . 'Liten' . DS . 'Autoloader.php');
 $loader = new \Liten\Autoloader();
 $loader->register();
