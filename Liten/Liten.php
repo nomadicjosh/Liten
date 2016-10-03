@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        http://www.litenframework.com
- * @version     1.0.0
+ * @link        https://www.litenframework.com
+ * @since       1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -37,7 +37,7 @@ class Liten
     /**
      * @var string
      */
-    public $version = '1.0.3';
+    public $version = '1.0.5';
 
     /**
      * @var \Liten\Helper\Set
@@ -189,8 +189,6 @@ class Liten
             'cookies.savepath'      => '/tmp/',
             // Directories
             'view_dir'              => APP_PATH . 'views' . DS,
-            'layouts_dir'           => APP_PATH . 'views' . DS . '_layouts' . DS,
-            'partials_dir'          => APP_PATH . 'views' . DS . '_partials' . DS,
             'routers_dir'           => APP_PATH . 'routers' . DS
         ];
     }

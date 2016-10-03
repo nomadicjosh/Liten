@@ -2,8 +2,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        http://www.litenframework.com
- * @version     1.0.0
+ * @link        https://www.litenframework.com
+ * @since       1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -34,10 +34,8 @@
  * with the autoloader and the loading of other
  * needed functions and files.
  */
-defined('APP_ENV')      or define('APP_ENV', 'DEV');
 defined('DS')           or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH')    or define('BASE_PATH', __DIR__ . DS);
-defined('APP_PATH')     or define('APP_PATH', BASE_PATH . 'app' . DS);
 
 /**
  * Step 1: Require the Bootstrap
@@ -58,39 +56,129 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
 $app = new \Liten\Liten();
 
 /**
- * Step 3: Include database config file
- * 
- * This is an example of loaded a database config
- * file when calling an application that needs
- * database connection.
+ * Step 3: Include the routes needed
  */
-if(file_exists( BASE_PATH . 'config.php' )) {
-    include( BASE_PATH . 'config.php' );
+
+// GET route
+$app->get('/', function () {
+        $template = <<<EOT
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Liten Framework PHP 5.4.x</title>
+<style type="text/css">
+  
+ body {
+   background: #f1f4f7;
+   padding: 0;
+   margin: 0;
+   } 
+  
+a {
+  color: #008ae1 !important;
+  text-decoration: none !important;
+  }
+  
+a:hover {
+  color: #333333 !important;
+  text-decoration: underline !important;
+  }
+p, ol {
+   font-size: 1.2em;
 }
+</style>
+</head>
+<body style="background-color:#ffffff;" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+  <table border="0" cellspacing="0" cellpadding="0" width="100%" align="center">
+    <tbody>
+      <tr>
+      <td style="background-color: #ffffff; width: 100%;">
+        <table style="width: 600px; margin: 0 auto; border-bottom: 1px solid #e6e6e6;" border="0" cellspacing="0" cellpadding="0" align="center" class="full">
+          <tr>
+            <td width="100%" valign="middle" height="94">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+		<tr>
+			<td height="12">&nbsp;</td>
+		</tr>
+                <tr>
+                  <td class="highlight pdTp32 pdBt16" style="margin-top: 0;margin-left: 0;margin-right: 0;margin-bottom: 0;padding-top: 32px;padding-bottom: 16px;padding-left: 16px;padding-right: 16px;border-collapse: collapse;border-spacing: 0;-webkit-text-size-adjust: none;font-family: Arial, Helvetica, sans-serif;width: 512px;text-align: center;background-color: #f6f6f7;"><h1 style="margin-top: 0;margin-left: 0;margin-right: 0;margin-bottom: 5px;padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;-webkit-text-size-adjust: none;font-family: Arial, Helvetica, sans-serif;font-size: 24px;line-height: 36px;font-weight: bold;color: #465059;"><span style="color: #465059;">Liten Framework</span></h1></td>
+                </tr>
+		<tr>
+			<td height="12">&nbsp;</td>
+		</tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 600px; margin: 0 auto; font-family: arial,helvetica,sans-serif; font-size: 13px; color: #333; line-height: 19px; background: #ffffff;" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF" class="full">
+          <tr>
+            <td class="maincol" valign="top" width="100%">
+              <table cellpadding="0" cellspacing="0" border="0" style="padding: 0;" width="100%">
+            		<tr>
+            		<td height="24" width="100%">&nbsp;</td>
+            		</tr>
+                <tr>
+                  <td>
+			<div data-signal-editable="Maincol" data-signal-content-type="layout"></div>
+      <!-- maincol -->
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family: arial,helvetica,sans-serif; font-size: 11px; color: #555; line-height: 17px;">
+                  <tr>
+                  
+                  <td colspan="3" width="100%" valign="top" height="24">
+                   <p>You have successfully installed the Liten Framework. Liten is a small and simple micro framework that can be used to easily create restful applications. Before getting started, you should familiarize yourself with the <a href="https://www.litenframework.com/"><strong>online documentation</strong></a>. If you have any questions, feel free to leave a comment on the main site or at Github.</p>
+
+					<p>After reading the documentation, you should familiarize yourself with the following files:</p>
+					
+					<ol>
+					<li>index.php is the main application file.</li>
+					<li>/Liten/Bootstrap.php is the initialization file</li>
+					</ol>
+					
+					<p>I would love to see Liten turn into a great framework. It's creation is the result of some of the good stuff from other micro frameworks. Want to get involved? I welcome you to participate on the <a href="https://www.litenframework.com/"><strong>main site</strong></a> as well as the <a href="https://github.com/parkerj/Liten"><strong>Github</strong></a> repository.</p>
+
+            	</p>
+                        </td>
+                      </tr>
+</table>
+
+		<div data-signal-editable="Sociable" data-signal-content-type="layout" class="sociable"></div>	
+
+            </td>
+                </tr>
+              </table>
+                 
+
+
+            </td>
+          </tr>
+      </table>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
+EOT;
+        echo $template;
+    }
+);
+
+// POST route
+$app->post('/post',function () {
+        echo 'Example of a post route.';
+    }
+);
+
+// DELETE route
+$app->delete('/delete',function () {
+        echo 'Example of a delete route.';
+    }
+);
 
 /**
- * Step 4: Require a functions file
- *
- * A functions file may include any dependency injections
- * or prelimary functions for your application.
- */
-require( APP_PATH . 'functions.php' );
-
-/**
- * Step 5: Include the routers needed
- *
- * Here we loop through the routers directory in order
- * to include routes needed at runtime. This helps
- * keep routers organized and the index.php clean.
- */
-$routers = glob($app->config('routers_dir') . '*.router.php');
-foreach ($routers as $router) {
-    if (file_exists($router))
-        include($router);
-}
-
-/**
- * Step 6: Run the Liten application
+ * Step 4: Run the Liten application
  *
  * This method should be called last. This executes the Liten application
  * and returns the HTTP response to the HTTP client.

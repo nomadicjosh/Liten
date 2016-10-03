@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        http://www.litenframework.com
- * @version     1.0.1
+ * @link        https://www.litenframework.com
+ * @since       1.0.1
  * @package		Liten
  * 
  * The MIT License (MIT)

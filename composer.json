@@ -1,0 +1,23 @@
+{
+    "name": "liten/liten",
+    "type": "library",
+    "description": "Liten is a small, simple, and restful micro framework. Even though it is small, you can still use it to build intelligent and dynamic restful api's.",
+    "keywords": ["microframework","rest","framework","liten"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joshua Parker",
+            "email": "joshmac3@icloud.com",
+            "homepage": "https://www.edutracsis.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Liten": "."
+        }
+    },
+    "minimum-stability": "stable"
+}
