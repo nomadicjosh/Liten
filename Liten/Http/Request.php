@@ -75,7 +75,7 @@ class Request
 
     public function getMethod()
     {
-        return $this->server['REQUEST_METHOD'];
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     /**
@@ -146,7 +146,7 @@ class Request
      */
     public function getHost()
     {
-        return $this->server['HTTP_HOST'];
+        return $_SERVER['HTTP_HOST'];
     }
 
     /**
@@ -166,7 +166,7 @@ class Request
      */
     public function url_for($route)
     {
-        $base = $this->server['HTTP_HOST'] . $this->server['SCRIPT_NAME'];
+        $base = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
         $index = str_replace('index.php', '', $base);
         $url = rtrim($index, '/');
 

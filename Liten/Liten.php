@@ -34,7 +34,7 @@ class Liten
     /**
      * @var string
      */
-    public $version = '1.0.6';
+    public $version = '1.0.7';
 
     /**
      * @var \Liten\Helper\Set
@@ -388,7 +388,7 @@ class Liten
 
         // getallheaders not available: manually extract 'm
         $headers = [];
-        foreach ($this->req->server as $name => $value) {
+        foreach ($_SERVER as $name => $value) {
             if ((substr($name, 0, 5) == 'HTTP_') || ($name == 'CONTENT_TYPE') || ($name == 'CONTENT_LENGTH')) {
                 $headers[str_replace([' ', 'Http'], ['-', 'HTTP'], ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
             }
@@ -403,15 +403,15 @@ class Liten
     public function getRequestMethod()
     {
         // Take the method as found in $_SERVER
-        $method = $this->req->server['REQUEST_METHOD'];
+        $method = $_SERVER['REQUEST_METHOD'];
         // If it's a HEAD request override it to being GET and prevent any output, as per HTTP Specification
         // @url http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4
-        if ($this->req->server['REQUEST_METHOD'] == 'HEAD') {
+        if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
             ob_start();
             $method = 'GET';
         }
         // If it's a POST request, check for a method override header
-        else if ($this->req->server['REQUEST_METHOD'] == 'POST') {
+        else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $headers = $this->getRequestHeaders();
             if (isset($headers['X-HTTP-Method-Override']) && in_array($headers['X-HTTP-Method-Override'], ['PUT', 'DELETE', 'PATCH'])) {
                 $method = $headers['X-HTTP-Method-Override'];
@@ -441,7 +441,7 @@ class Liten
             if ($this->_error && is_callable($this->_error))
                 call_user_func($this->_error);
             else
-                header($this->req->server['SERVER_PROTOCOL'] . ' 404 Not Found');
+                header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         }
         // If a route was handled, perform the finish callback (if any)
         else {
@@ -449,7 +449,7 @@ class Liten
                 $callback();
         }
         // If it originally was a HEAD request, clean up after ourselves by emptying the output buffer
-        if ($this->req->server['REQUEST_METHOD'] == 'HEAD')
+        if ($_SERVER['REQUEST_METHOD'] == 'HEAD')
             ob_end_clean();
     }
 
@@ -516,7 +516,7 @@ class Liten
     public function prefixHost($resourcePath, $hostType = null)
     {
         if ($hostType == BASE_URL || is_null($hostType) || APP_ENV != 'PROD') {
-            return "//" . $this->req->server['HTTP_HOST'] . $resourcePath;
+            return "//" . $_SERVER['HTTP_HOST'] . $resourcePath;
         }
         return "//" . $hostType . $resourcePath;
     }
@@ -528,8 +528,8 @@ class Liten
     private function getCurrentUri()
     {
         // Get the current Request URI and remove rewrite basepath from it (= allows one to run the router in a subfolder)
-        $basepath = implode('/', array_slice(explode('/', $this->req->server['SCRIPT_NAME']), 0, -1)) . '/';
-        $uri = substr($this->req->server['REQUEST_URI'], strlen($basepath));
+        $basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
+        $uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
         // Don't take query params into account on the URL
         if (strstr($uri, '?'))
             $uri = substr($uri, 0, strpos($uri, '?'));
