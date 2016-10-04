@@ -27,7 +27,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 /**
  * Step 1: Require the Bootstrap
  *
@@ -156,13 +155,15 @@ EOT;
 );
 
 // POST route
-$app->post('/post', function () {
+$app->post(
+    '/post', function () {
     echo 'Example of a post route.';
 }
 );
 
 // DELETE route
-$app->delete('/delete', function () {
+$app->delete(
+    '/delete', function () {
     echo 'Example of a delete route.';
 }
 );
