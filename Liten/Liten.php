@@ -449,7 +449,7 @@ class Liten
             if ($this->_error && is_callable($this->_error))
                 call_user_func($this->_error);
             else
-                header($this->req->server['SERVER_PROTOCOL'] . ' 404 Not Found');
+                @header($this->req->server['SERVER_PROTOCOL'] . ' 404 Not Found');
         }
         // If a route was handled, perform the finish callback (if any)
         else {
