@@ -3,4 +3,4 @@ app/tmp/logs/*.txt
 /nbproject/
 composer.lock
 
-/vendor/
+vendor/
