@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.0
+ * @link        http://www.litenframework.com
+ * @version     1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,13 +28,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 class Liten
 {
 
     /**
      * @var string
      */
-    public $version = '1.0.7';
+    public $version = '1.0.3';
 
     /**
      * @var \Liten\Helper\Set
@@ -98,7 +99,11 @@ class Liten
         });
         // Load default view
         $this->inst->singleton('view', function ($c) {
-            return new \Liten\View();
+            $viewClass = $c['config']['view'];
+            $templatesPath = $c['config']['view_dir'];
+            $view = ($viewClass instanceOf \Liten\View) ? $viewClass : new $viewClass;
+            $view->_viewPath = $templatesPath;
+            return $view;
         });
         // Load default cookies
         $this->inst->singleton('cookies', function ($c) {
@@ -175,18 +180,21 @@ class Liten
     {
         return [
             // Cookies
-            'cookies.lifetime' => '1440',
-            'cookies.path' => '/',
-            'cookies.domain' => null,
-            'cookies.secure' => false,
-            'cookies.httponly' => false,
+            'cookies.lifetime'      => '1440',
+            'cookies.path'          => '/',
+            'cookies.domain'        => null,
+            'cookies.secure'        => false,
+            'cookies.httponly'      => false,
             // Secure Cookies
-            'cookies.crypt' => 'sha256',
-            'cookies.secret.key' => '8sh8w82j9s71092iw8usi',
-            'cookies.savepath' => '/tmp/',
+            'cookies.crypt'         => 'sha256',
+            'cookies.secret.key'    => '8sh8w82j9s71092iw8usi',
+            'cookies.savepath'      => '/tmp/',
             // Directories
-            'view_dir' => '../views/',
-            'routers_dir' => '../routers'
+            'view'                  => '\Liten\View',
+            'view_dir'              => APP_PATH . 'views' . DS,
+            'layouts_dir'           => APP_PATH . 'views' . DS . '_layouts' . DS,
+            'partials_dir'          => APP_PATH . 'views' . DS . '_partials' . DS,
+            'routers_dir'           => APP_PATH . 'routers' . DS
         ];
     }
 
@@ -388,7 +396,7 @@ class Liten
 
         // getallheaders not available: manually extract 'm
         $headers = [];
-        foreach ($_SERVER as $name => $value) {
+        foreach ($this->req->server as $name => $value) {
             if ((substr($name, 0, 5) == 'HTTP_') || ($name == 'CONTENT_TYPE') || ($name == 'CONTENT_LENGTH')) {
                 $headers[str_replace([' ', 'Http'], ['-', 'HTTP'], ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
             }
@@ -403,15 +411,15 @@ class Liten
     public function getRequestMethod()
     {
         // Take the method as found in $_SERVER
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = $this->req->server['REQUEST_METHOD'];
         // If it's a HEAD request override it to being GET and prevent any output, as per HTTP Specification
         // @url http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4
-        if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
+        if ($this->req->server['REQUEST_METHOD'] == 'HEAD') {
             ob_start();
             $method = 'GET';
         }
         // If it's a POST request, check for a method override header
-        else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        else if ($this->req->server['REQUEST_METHOD'] == 'POST') {
             $headers = $this->getRequestHeaders();
             if (isset($headers['X-HTTP-Method-Override']) && in_array($headers['X-HTTP-Method-Override'], ['PUT', 'DELETE', 'PATCH'])) {
                 $method = $headers['X-HTTP-Method-Override'];
@@ -441,7 +449,7 @@ class Liten
             if ($this->_error && is_callable($this->_error))
                 call_user_func($this->_error);
             else
-                header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+                header($this->req->server['SERVER_PROTOCOL'] . ' 404 Not Found');
         }
         // If a route was handled, perform the finish callback (if any)
         else {
@@ -449,7 +457,7 @@ class Liten
                 $callback();
         }
         // If it originally was a HEAD request, clean up after ourselves by emptying the output buffer
-        if ($_SERVER['REQUEST_METHOD'] == 'HEAD')
+        if ($this->req->server['REQUEST_METHOD'] == 'HEAD')
             ob_end_clean();
     }
 
@@ -516,7 +524,7 @@ class Liten
     public function prefixHost($resourcePath, $hostType = null)
     {
         if ($hostType == BASE_URL || is_null($hostType) || APP_ENV != 'PROD') {
-            return "//" . $_SERVER['HTTP_HOST'] . $resourcePath;
+            return "//" . $this->req->server['HTTP_HOST'] . $resourcePath;
         }
         return "//" . $hostType . $resourcePath;
     }
@@ -528,8 +536,8 @@ class Liten
     private function getCurrentUri()
     {
         // Get the current Request URI and remove rewrite basepath from it (= allows one to run the router in a subfolder)
-        $basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
-        $uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
+        $basepath = implode('/', array_slice(explode('/', $this->req->server['SCRIPT_NAME']), 0, -1)) . '/';
+        $uri = substr($this->req->server['REQUEST_URI'], strlen($basepath));
         // Don't take query params into account on the URL
         if (strstr($uri, '?'))
             $uri = substr($uri, 0, strpos($uri, '?'));

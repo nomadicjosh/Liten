@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.0
+ * @link        http://www.litenframework.com
+ * @version     1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,6 +28,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 class Response
 {
 
@@ -66,6 +67,7 @@ class Response
      * All of the headers set for response (can clear with clearHeaders() and add with header())
      */
     protected $_headers = [];
+    
     public $HTTP = [
         //Informational 1xx
         100 => [

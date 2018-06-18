@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.0
+ * @link        http://www.litenframework.com
+ * @version     1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,6 +28,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 class View
 {
 
@@ -76,7 +77,7 @@ class View
      * 
      * @var string
      */
-    protected $_viewPath;
+    public $_viewPath;
 
     public function __construct(\Liten\Liten $liten = null)
     {
