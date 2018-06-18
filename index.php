@@ -33,7 +33,7 @@
  * The bootstrap includes defines as well as autoloader
  * in order to have a working install of Liten.
  */
-require('Liten/Bootstrap.php');
+require('vendor/autoload.php');
 
 /**
  * Step 2: Instantiate a Liten application

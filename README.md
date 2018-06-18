@@ -80,9 +80,9 @@ $app->run();
 
 ## Sample Application
 
-The [Liten Blog] (https://github.com/parkerj/Liten-Blog) is a sample application to show what you can do with the Liten Framework.
+The [Liten Blog](https://github.com/parkerj/Liten-Blog) is a sample application to show what you can do with the Liten Framework.
 
 ## Documentation & Community
 
 Would love to have your input and help into making Liten a small but yet powerful micro framework. Head on over to 
-the [online documentation] (https://www.litenframework.com/) site to ask questions and or make suggestions.
+the [online documentation](https://www.litenframework.com/) site to ask questions and or make suggestions.
