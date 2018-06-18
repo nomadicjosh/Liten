@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Liten\\": "Liten"
+            "Liten\\": "Liten/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-        "Liten\\Tests\\": "tests"
+        "Liten\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable"
