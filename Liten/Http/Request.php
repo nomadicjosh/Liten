@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.0
+ * @link        http://www.litenframework.com
+ * @version     1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,6 +28,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 class Request
 {
 
@@ -36,9 +37,39 @@ class Request
      * @var bool
      */
     public $_ssl = false;
+    
+    /**
+     * Global cookie variable
+     * @var bool
+     */
+    public $cookie = [];
+    
+    /**
+     * Global get variable
+     * @var bool
+     */
+    public $get = [];
+    
+    /**
+     * Global globals variable
+     * @var bool
+     */
+    public $globals = [];
+    
+    /**
+     * Global post variable
+     * @var bool
+     */
+    public $post = [];
+    
+    /**
+     * Global request variable
+     * @var bool
+     */
+    public $request = [];
 
     /**
-     * Global server variables
+     * Global server variable
      * @var bool
      */
     public $server = [];
@@ -54,6 +85,11 @@ class Request
      */
     public function __construct()
     {
+        $this->cookie = $_COOKIE;
+        $this->get = $_GET;
+        $this->globals = $GLOBALS;
+        $this->post = $_POST;
+        $this->request = $_REQUEST;
         $this->server = $_SERVER;
     }
 
@@ -75,7 +111,7 @@ class Request
 
     public function getMethod()
     {
-        return $_SERVER['REQUEST_METHOD'];
+        return $this->server['REQUEST_METHOD'];
     }
 
     /**
@@ -146,7 +182,7 @@ class Request
      */
     public function getHost()
     {
-        return $_SERVER['HTTP_HOST'];
+        return $this->server['HTTP_HOST'];
     }
 
     /**
@@ -166,7 +202,7 @@ class Request
      */
     public function url_for($route)
     {
-        $base = $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+        $base = $this->server['HTTP_HOST'] . $this->server['SCRIPT_NAME'];
         $index = str_replace('index.php', '', $base);
         $url = rtrim($index, '/');
 
