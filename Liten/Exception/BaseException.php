@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.1
+ * @link        http://www.litenframework.com
+ * @version     1.0.1
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,6 +28,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
+
 interface BaseException
 {
     /* Protected methods inherited from Exception class */
@@ -48,5 +51,5 @@ interface BaseException
 
     public function __toString();                 // formated string for display
 
-    public function __construct($message = null, $code = 0);
+    public function __construct($message = null, $code = 0, $previous = null);
 }

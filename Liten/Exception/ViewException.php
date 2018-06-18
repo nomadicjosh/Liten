@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.0
+ * @link        http://www.litenframework.com
+ * @version     1.0.0
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,6 +28,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
+
 class ViewException extends LitenException
 {
     

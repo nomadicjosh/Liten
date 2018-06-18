@@ -3,8 +3,8 @@
 /**
  * Liten - PHP 5 micro framework
  * 
- * @link        https://www.litenframework.com
- * @since       1.0.1
+ * @link        http://www.litenframework.com
+ * @version     1.0.1
  * @package		Liten
  * 
  * The MIT License (MIT)
@@ -28,6 +28,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+if (!defined('BASE_PATH'))
+    exit('No direct script access allowed');
+
 abstract class LitenException extends \Exception implements BaseException
 {
 
@@ -38,12 +41,12 @@ abstract class LitenException extends \Exception implements BaseException
     protected $line;                              // Source line of exception
     private $trace;                             // Unknown
 
-    public function __construct($message = null, $code = 0)
+    public function __construct($message = null, $code = 0, $previous = null)
     {
         if (!$message) {
             throw new $this('Unknown ' . get_class($this));
         }
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
     public function __toString()
